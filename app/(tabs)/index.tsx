@@ -18,8 +18,11 @@ export default function HomeScreen() {
       <View style={ styles.box}>
         <Text style={ styles.subTitle }> Today's Recommended Stretch </Text>
         <View style={ styles.progressCard}>
-          <Text> 0% </Text>
+          <Text> Candle wtv</Text>
         </View>
+        <View>
+          <Text> New stretches eveeryday wait till next one!</Text>
+          </View>
       </View>
 
       {/* Progress Card */}
@@ -28,6 +31,9 @@ export default function HomeScreen() {
         <View style={ styles.progressCard}>
           <Text> 0% </Text>
         </View>
+        <View>
+          <Text> Summary: You doing great keep it up</Text>
+          </View>
       </View>
 
       {/* Mood Board */}
@@ -36,6 +42,9 @@ export default function HomeScreen() {
         <View style={ styles.progressCard}>
           <Text> Happ, Ok, Sad </Text>
         </View>
+        <View>
+          <Text> Summary: You sad this week </Text>
+          </View>
       </View>
 
 
@@ -46,7 +55,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 20,
-    backgroundColor: '#fff',
+    backgroundColor: '#b5caa0',
   },
   title: {
     fontSize: 24,

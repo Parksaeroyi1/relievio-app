@@ -15,19 +15,33 @@ export default function TrackerScreen() {
       </SafeAreaView>
 
 
-      {/* Progress Card */}
+      {/* Need to do */}
       <View>
-        <Text style={ styles.subTitle }> Your Progress </Text>
+        <Text style={ styles.subTitle }> Need To Do </Text>
         <View style={ styles.progressCard}>
-          <Text> 0% </Text>
+          <Text> DO THESE STRETCHES SOON </Text>
+        </View>
+        <View style={ styles.progressCard}>
+          <Text> DO THESE STRETCHES SOON </Text>
+        </View>
+        <View style={ styles.progressCard}>
+          <Text> DO THESE STRETCHES SOON </Text>
         </View>
       </View>
 
-      {/* Mood Board */}
+      {/* Calendar */}
       <View>
-        <Text style={ styles.subTitle }> Mood Board </Text>
-        <View style={ styles.progressCard}>
-          <Text> Happ, Ok, Sad </Text>
+        <Text style={ styles.subTitle }> Calendar </Text>
+        <View style={ styles.box }>
+          <Text></Text>
+        </View>
+      </View>
+
+       {/* Notes to self */}
+       <View>
+        <Text style={ styles.subTitle }> Notes to self </Text>
+        <View style={ styles.box }>
+          <Text></Text>
         </View>
       </View>
 
@@ -39,7 +53,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 20,
-    backgroundColor: '#fff',
+    backgroundColor: '#b5caa0',
   },
   title: {
     fontSize: 24,
@@ -55,5 +69,13 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     marginBottom: 20,
   },
+  box: {
+    marginBottom: 20,
+    padding: 10,
+    borderRadius: 10,
+    borderColor: '#000',
+    borderWidth: 1,
+    height: 300,
+  }
 
 })
