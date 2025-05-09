@@ -6,8 +6,9 @@ export default function ProfileScreen() {
   
   return (
     <ScrollView style={ styles.container }>
-      <SafeAreaView>
+        
       {/* Header */}
+      <SafeAreaView>
       <View>
       <Text style={ styles.title }>Profile</Text>
       </View>

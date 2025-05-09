@@ -6,16 +6,24 @@ export default function HomeScreen() {
   
   return (
     <ScrollView style={ styles.container }>
-      <SafeAreaView>
+
       {/* Header */}
+      <SafeAreaView>
       <View>
       <Text style={ styles.title }>Home</Text>
       </View>
       </SafeAreaView>
 
+      {/* Today's Recommended Stretch */}
+      <View style={ styles.box}>
+        <Text style={ styles.subTitle }> Today's Recommended Stretch </Text>
+        <View style={ styles.progressCard}>
+          <Text> 0% </Text>
+        </View>
+      </View>
 
       {/* Progress Card */}
-      <View>
+      <View style={ styles.box}>
         <Text style={ styles.subTitle }> Your Progress </Text>
         <View style={ styles.progressCard}>
           <Text> 0% </Text>
@@ -23,7 +31,7 @@ export default function HomeScreen() {
       </View>
 
       {/* Mood Board */}
-      <View>
+      <View style={ styles.box}>
         <Text style={ styles.subTitle }> Mood Board </Text>
         <View style={ styles.progressCard}>
           <Text> Happ, Ok, Sad </Text>
@@ -46,7 +54,7 @@ const styles = StyleSheet.create({
   },
   subTitle: {
     fontSize: 18,
-    marginBottom: 10,
+    marginBottom: 20,
   },
   progressCard: {
     backgroundColor: '#f0f0f0',
@@ -54,5 +62,10 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     marginBottom: 20,
   },
+  box: {
+    marginBottom: 20,
+    padding: 10,
+    borderRadius: 10,
+  }
 
 })

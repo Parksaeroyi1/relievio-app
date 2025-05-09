@@ -6,8 +6,9 @@ export default function TrackerScreen() {
   
   return (
     <ScrollView style={ styles.container }>
-      <SafeAreaView>
+
       {/* Header */}
+      <SafeAreaView>
       <View>
       <Text style={ styles.title }>Tracker</Text>
       </View>
