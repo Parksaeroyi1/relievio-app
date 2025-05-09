@@ -15,18 +15,24 @@ export default function HomeScreen() {
       </SafeAreaView>
 
       {/* Today's Recommended Stretch */}
-      <View style={ styles.box}>
+      <View>
         <Text style={ styles.subTitle }> Today's Recommended Stretch </Text>
         <View style={ styles.progressCard}>
+
+          <View style={ styles.box }>
           <Text> Candle wtv</Text>
-        </View>
-        <View>
+          </View>
+
+          <View>
           <Text> New stretches eveeryday wait till next one!</Text>
           </View>
+
+        </View>
+        
       </View>
 
       {/* Progress Card */}
-      <View style={ styles.box}>
+      <View>
         <Text style={ styles.subTitle }> Your Progress </Text>
         <View style={ styles.progressCard}>
           <Text> 0% </Text>
@@ -37,14 +43,20 @@ export default function HomeScreen() {
       </View>
 
       {/* Mood Board */}
-      <View style={ styles.box}>
+      <View>
         <Text style={ styles.subTitle }> Mood Board </Text>
         <View style={ styles.progressCard}>
+
+          <View style={ styles.box }>
           <Text> Happ, Ok, Sad </Text>
-        </View>
-        <View>
+          </View>
+          
+          <View>
           <Text> Summary: You sad this week </Text>
           </View>
+
+        </View>
+       
       </View>
 
 
@@ -58,12 +70,12 @@ const styles = StyleSheet.create({
     backgroundColor: '#b5caa0',
   },
   title: {
-    fontSize: 24,
+    fontSize: 30,
     marginBottom: 20,
   },
   subTitle: {
     fontSize: 18,
-    marginBottom: 20,
+    marginBottom: 10,
   },
   progressCard: {
     backgroundColor: '#f0f0f0',
@@ -75,6 +87,9 @@ const styles = StyleSheet.create({
     marginBottom: 20,
     padding: 10,
     borderRadius: 10,
+    borderColor: '#000',
+    borderWidth: 1,
+    height: 100,
   }
 
 })

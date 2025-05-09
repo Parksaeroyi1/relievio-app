@@ -14,23 +14,39 @@ export default function ProfileScreen() {
       </View>
       </SafeAreaView>
 
-
-      {/* Progress Card */}
+      {/* Account Settings */}
       <View>
-        <Text style={ styles.subTitle }> Your Progress </Text>
+        <Text style={ styles.subTitle }> Account </Text>
         <View style={ styles.progressCard}>
-          <Text> 0% </Text>
+          <Text>Update Profile Info</Text>
         </View>
+        <View style={ styles.progressCard}>
+          <Text>Change Password</Text>
+          </View>
       </View>
 
-      {/* Mood Board */}
+      {/* App Settings */}
       <View>
-        <Text style={ styles.subTitle }> Mood Board </Text>
+        <Text style={ styles.subTitle }> Settings </Text>
         <View style={ styles.progressCard}>
-          <Text> Happ, Ok, Sad </Text>
+          <Text>Enable Notifications</Text>
         </View>
+        <View style={ styles.progressCard}>
+          <Text>Notifcation Settings</Text>
+          </View>
       </View>
 
+      {/* About */}
+      <View>
+        <Text style={ styles.subTitle }> About </Text>
+        <View style={ styles.progressCard}>
+          <Text>About Us</Text>
+        </View>
+
+        <View style={ styles.progressCard}>
+          <Text>Contact Us</Text>
+          </View>
+        </View>
 
     </ScrollView>
 )}  
@@ -42,7 +58,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#b5caa0',
   },
   title: {
-    fontSize: 24,
+    fontSize: 30,
     marginBottom: 20,
   },
   subTitle: {
