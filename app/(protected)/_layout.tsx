@@ -1,9 +1,17 @@
-import { Stack } from "expo-router";
+import { Redirect, Stack } from "expo-router";
 
-export default function RootLayout() {
+export const unstable_settings = {
+  initialRouteName: "(tabs)", //anchor
+};
+
+const isLoggedIn = true;
+
+export default function ProtectedLayout() {
+  if (!isLoggedIn) {
+    return <Redirect href="/login" />; 
+  }
   return (
-    <Stack>
-      <Stack.screen name="login" options={{ headerShown: false }} />  
+    <Stack> 
       <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
     </Stack>
   )
