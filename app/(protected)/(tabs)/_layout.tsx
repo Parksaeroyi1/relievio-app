@@ -19,9 +19,13 @@ export default function TabsLayout() {
         headerShown: false,
         tabBarIcon: ({ color }) => <Ionicons name="pulse" size={24} color={color} />,
          }} />
+    <Tabs.Screen name="planner" options={{ 
+        headerShown: false,
+        tabBarIcon: ({ color }) => <Ionicons name="person" size={24} color={color} />,
+        }} />
     <Tabs.Screen name="profile" options={{ 
         headerShown: false,
         tabBarIcon: ({ color }) => <Ionicons name="person" size={24} color={color} />,
-        }} /> 
+        }} />  
   </Tabs>
 )}

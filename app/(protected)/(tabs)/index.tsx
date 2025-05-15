@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View, ScrollView } from 'react-native'
+import { StyleSheet, Text, View, ScrollView, TouchableOpacity } from 'react-native'
 import React from 'react'
 import { SafeAreaView } from 'react-native-safe-area-context'
 
@@ -14,49 +14,35 @@ export default function HomeScreen() {
       </View>
       </SafeAreaView>
 
-      {/* Today's Recommended Stretch */}
+      {/* Stretches To Do */}
       <View>
-        <Text style={ styles.subTitle }> Today's Recommended Stretch </Text>
+        <Text style={ styles.subTitle }> Stretches to do </Text>
         <View style={ styles.progressCard}>
 
           <View style={ styles.box }>
-          <Text> Candle wtv</Text>
-          </View>
-
-          <View>
-          <Text> New stretches eveeryday wait till next one!</Text>
+          <Text> You got this to do</Text>
           </View>
 
         </View>
         
       </View>
 
-      {/* Progress Card */}
-      <View>
-        <Text style={ styles.subTitle }> Your Progress </Text>
-        <View style={ styles.progressCard}>
-          <Text> 0% </Text>
-        </View>
-        <View>
-          <Text> Summary: You doing great keep it up</Text>
-          </View>
-      </View>
-
       {/* Mood Board */}
       <View>
-        <Text style={ styles.subTitle }> Mood Board </Text>
+        <Text style={ styles.subTitle }> How you feeling today? </Text>
         <View style={ styles.progressCard}>
 
-          <View style={ styles.box }>
-          <Text> Happ, Ok, Sad </Text>
-          </View>
-          
-          <View>
-          <Text> Summary: You sad this week </Text>
-          </View>
+          <TouchableOpacity style={ styles.box } onPress={() => console.log('Happy')}>
+            <Text style={ styles.symptomText }>Happy</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={ styles.box } onPress={() => console.log('Sad')}>
+            <Text style={ styles.symptomText }>Sad</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={ styles.box } onPress={() => console.log('Angry')}>
+            <Text style={ styles.symptomText }>Angry</Text>
+          </TouchableOpacity>
 
-        </View>
-       
+      </View> 
       </View>
 
 
