@@ -1,9 +1,26 @@
 import { StyleSheet, Text, View, ScrollView, TouchableOpacity } from 'react-native'
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { SafeAreaView } from 'react-native-safe-area-context'
 
 export default function HomeScreen() {
   
+  const [stretch, setStretch] = useState({name: "", videoUrl: ""});
+
+  const fetchRecommendedStretches = async () => {
+    const response = await fetch('http://localhost:8000/api/recommendations');
+    const data = await response.json();
+    const randomIndex = Math.round(Math.random() * data.length);
+    console.log(data[randomIndex]);
+    console.log(Math.round(randomIndex));
+    setStretch(data[randomIndex]);
+    return data;
+  }
+  
+    useEffect(() => {
+      fetchRecommendedStretches()
+    }, []);
+    
+
   return (
     <ScrollView style={ styles.container }>
 
@@ -14,13 +31,14 @@ export default function HomeScreen() {
       </View>
       </SafeAreaView>
 
-      {/* Stretches To Do */}
+      {/* Daily Recommended Stretches */}
       <View>
-        <Text style={ styles.subTitle }> Stretches to do </Text>
+        <Text style={ styles.subTitle }> Daily Recommended Stretch </Text>
         <View style={ styles.progressCard}>
 
           <View style={ styles.box }>
-          <Text> You got this to do</Text>
+          <Text>{stretch.name}</Text>
+          <Text>{stretch.videoUrl}</Text>
           </View>
 
         </View>

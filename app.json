@@ -9,8 +9,18 @@
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
     "ios": {
-      "supportsTablet": true
-    },
+  "supportsTablet": true,
+  "infoPlist": {
+    "NSAppTransportSecurity": {
+      "NSAllowsArbitraryLoads": true,
+      "NSExceptionDomains": {
+        "192.168.2.46": {
+          "NSExceptionAllowsInsecureHTTPLoads": true
+        }
+      }
+    }
+  }
+},
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/adaptive-icon.png",
