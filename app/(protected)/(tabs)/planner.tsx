@@ -9,6 +9,10 @@ export default function PlannerScreen() {
     const [tags, setTags] = useState<string[]>([]);
     const [result, setResult] = useState({stretches: "", massage: ""});
     const [results, setResults] = useState([]);
+    const [showResult, setShowResult] = useState(false);
+    const [selectedSymptom, setSelectedSymptom] = useState(null);
+    const [selectedBodyPart, setSelectedBodyPart] = useState(null);
+
 
     const fetchResults = async () => {
         const response = await fetch('http://localhost:8000/api/results');
@@ -22,6 +26,8 @@ export default function PlannerScreen() {
           fetchResults()
         }, []);
 
+        
+
   return (
 
 
@@ -34,262 +40,536 @@ export default function PlannerScreen() {
       </View>
       </SafeAreaView>
 
-      {/* Symptoms */}
+      <View style={{ display: !showResult ? 'flex' : 'none' }}>
+      {/* SYMPTOMS */}
       <View style={styles.box}>
-        <Text style={styles.subTitle}>What are your symptoms?</Text>
+      
+        <Text style={styles.subTitle}>What are your symptoms?(Choose 1)</Text>
 
-        <TouchableOpacity
-        style={styles.symptomsCard}
-        onPress={() => {
-            setTags(current => 
-                current.includes("tight")
-                  ? [...current]
-                  : [...current, "tight"]
-              );
-            console.log(tags);
-          }}>
-      <Text style={styles.symptomText}>Tight</Text>
-      </TouchableOpacity>
+        {/* Tight */}
+<TouchableOpacity
+  style={[
+    styles.symptomsCard,
+    selectedSymptom === "tight" && styles.symptomsCardSelected
+  ]}
+  onPress={() => {
+    setTags(current =>
+      current.includes("tight") ? [...current] : [...current, "tight"]
+    );
+    setSelectedSymptom("tight");
+  }}
+>
+  <Text style={styles.symptomText}>Tight</Text>
+</TouchableOpacity>
 
-       
-      <TouchableOpacity
-        style={styles.symptomsCard}
-        onPress={() => {
-            setTags(current => 
-                current.includes("sore")
-                  ? [...current]
-                  : [...current, "sore"]
-              );
-            console.log(tags);
-          }}>
-      <Text style={styles.symptomText}>Sore</Text>
-      </TouchableOpacity>
+{/* Sore */}
+<TouchableOpacity
+  style={[
+    styles.symptomsCard,
+    selectedSymptom === "sore" && styles.symptomsCardSelected
+  ]}
+  onPress={() => {
+    setTags(current =>
+      current.includes("sore") ? [...current] : [...current, "sore"]
+    );
+    setSelectedSymptom("sore");
+  }}
+>
+  <Text style={styles.symptomText}>Sore</Text>
+</TouchableOpacity>
 
+{/* Stiff */}
+<TouchableOpacity
+  style={[
+    styles.symptomsCard,
+    selectedSymptom === "stiff" && styles.symptomsCardSelected
+  ]}
+  onPress={() => {
+    setTags(current =>
+      current.includes("stiff") ? [...current] : [...current, "stiff"]
+    );
+    setSelectedSymptom("stiff");
+  }}
+>
+  <Text style={styles.symptomText}>Stiff</Text>
+</TouchableOpacity>
+ </View>
         
-      <TouchableOpacity
-        style={styles.symptomsCard}
-        onPress={() => {
-            setTags(current => 
-                current.includes("stiff")
-                  ? [...current]
-                  : [...current, "stiff"]
-              );
-            console.log(tags);
-          }}>
-      <Text style={styles.symptomText}>Stiff</Text>
-      </TouchableOpacity>
 
-        
-      <TouchableOpacity
-        style={styles.symptomsCard}
-        onPress={() => {
-            setTags(current => 
-                current.includes("cramping")
-                  ? current.filter(tag => tag !== "cramping")
-                  : [...current, "cramping"]
-              );
-            console.log(tags);
-          }}>
-      <Text style={styles.symptomText}>Cramping</Text>
-      </TouchableOpacity>
-        </View>
 
-        {/* Body */}
+        {/* BODY */}
       <View>
-        <Text style={styles.subTitle}>Where?</Text>
+        <Text style={styles.subTitle}>Where?(Choose 1)</Text>
       </View>
 
-        {/* Upper Body */}
-        <View style={styles.box}>
 
+        {/* UPPER */}
+        <View style={styles.box}>
         <Text style={styles.subTitle}>Upper Body:</Text>
-        <TouchableOpacity
-        style={styles.symptomsCard}
-        onPress={() => {
-            setTags(current => 
-                current.includes("neck")
-                  ? current.filter(tag => tag !== "neck")
-                  : [...current, "neck"]
-              );
-            console.log(tags);
-          }}>
+
+          {/* Neck */}
+          <TouchableOpacity
+  style={[
+    styles.symptomsCard,
+    selectedBodyPart === "neck" && styles.symptomsCardSelected
+  ]}
+  onPress={() => {
+    setTags(current =>
+      current.includes("neck") ? [...current] : [...current, "neck"]
+    );
+    setSelectedBodyPart("neck");
+  }}
+>
       <Text style={styles.symptomText}>Neck</Text>
       </TouchableOpacity>
-
+        
+        {/* Shoulders */}
         <TouchableOpacity
-        style={styles.symptomsCard}
-        onPress={() => {
-            setTags(current => 
-                current.includes("upper back")
-                  ? current.filter(tag => tag !== "upper back")
-                  : [...current, "upper back"]
-              );
-            console.log(tags);
-          }}>
+  style={[
+    styles.symptomsCard,
+    selectedBodyPart === "shoulders" && styles.symptomsCardSelected
+  ]}
+  onPress={() => {
+    setTags(current =>
+      current.includes("shoulders") ? [...current] : [...current, "shoulders"]
+    );
+    setSelectedBodyPart("shoulders");
+  }}
+>
+      <Text style={styles.symptomText}>Shoulders</Text>
+      </TouchableOpacity>
+
+        {/*/ Traps */}
+        <TouchableOpacity
+  style={[
+    styles.symptomsCard,
+    selectedBodyPart === "traps" && styles.symptomsCardSelected
+  ]}
+  onPress={() => {
+    setTags(current =>
+      current.includes("traps") ? [...current] : [...current, "traps"]
+    );
+    setSelectedBodyPart("traps");
+  }}
+>
+      <Text style={styles.symptomText}>Traps</Text>
+      </TouchableOpacity>
+
+        {/* Upper Back */}
+        <TouchableOpacity
+  style={[
+    styles.symptomsCard,
+    selectedBodyPart === "upper back" && styles.symptomsCardSelected
+  ]}
+  onPress={() => {
+    setTags(current =>
+      current.includes("upper back") ? [...current] : [...current, "upper back"]
+    );
+    setSelectedBodyPart("upper back");
+  }}
+>
       <Text style={styles.symptomText}>Upper Back</Text>
       </TouchableOpacity>
 
-      <TouchableOpacity
-        style={styles.symptomsCard}
-        onPress={() => {
-            setTags(current => 
-                current.includes("chest")
-                  ? current.filter(tag => tag !== "chest")
-                  : [...current, "chest"]
-              );
-            console.log(tags);
-          }}>
+        {/* Chest */}
+        <TouchableOpacity
+  style={[
+    styles.symptomsCard,
+    selectedBodyPart === "chest" && styles.symptomsCardSelected
+  ]}
+  onPress={() => {
+    setTags(current =>
+      current.includes("chest") ? [...current] : [...current, "chest"]
+    );
+    setSelectedBodyPart("chest");
+  }}
+>
       <Text style={styles.symptomText}>Chest</Text>
       </TouchableOpacity>
 
-      <TouchableOpacity
-        style={styles.symptomsCard}
-        onPress={() => {
-            setTags(current => 
-                current.includes("upper arms")
-                  ? current.filter(tag => tag !== "upper arms")
-                  : [...current, "upper arms"]
-              );
-            console.log(tags);
-          }}>
+        {/* Upper Arms */}
+        <TouchableOpacity
+  style={[
+    styles.symptomsCard,
+    selectedBodyPart === "upper arms" && styles.symptomsCardSelected
+  ]}
+  onPress={() => {
+    setTags(current =>
+      current.includes("upper arms") ? [...current] : [...current, "upper arms"]
+    );
+    setSelectedBodyPart("upper arms");
+  }}
+>
       <Text style={styles.symptomText}>Upper Arms</Text>
       </TouchableOpacity>
 
-      <TouchableOpacity
-        style={styles.symptomsCard}
-        onPress={() => {
-            setTags(current => 
-                current.includes("elbows")
-                  ? current.filter(tag => tag !== "elbows")
-                  : [...current, "elbows"]
-              );
-            console.log(tags);
-          }}>
+        {/* Elbows */}
+        <TouchableOpacity
+  style={[
+    styles.symptomsCard,
+    selectedBodyPart === "elbows" && styles.symptomsCardSelected
+  ]}
+  onPress={() => {
+    setTags(current =>
+      current.includes("elbows") ? [...current] : [...current, "elbows"]
+    );
+    setSelectedBodyPart("elbows");
+  }}
+>
       <Text style={styles.symptomText}>Elbows</Text>
       </TouchableOpacity>
 
+      {/* Forearms */}
       <TouchableOpacity
-        style={styles.symptomsCard}
-        onPress={() => {
-            setTags(current => 
-                current.includes("forearms")
-                  ? current.filter(tag => tag !== "forearms")
-                  : [...current, "forearms"]
-              );
-            console.log(tags);
-          }}>
+  style={[
+    styles.symptomsCard,
+    selectedBodyPart === "forearms" && styles.symptomsCardSelected
+  ]}
+  onPress={() => {
+    setTags(current =>
+      current.includes("forearms") ? [...current] : [...current, "forearms"]
+    );
+    setSelectedBodyPart("forearms");
+  }}
+>
       <Text style={styles.symptomText}>Forearms</Text>
       </TouchableOpacity>
 
+        {/* Hands */}
       <TouchableOpacity
-        style={styles.symptomsCard}
-        onPress={() => {
-            setTags(current => 
-                current.includes("wrists")
-                  ? current.filter(tag => tag !== "wrists")
-                  : [...current, "wrists"]
-              );
-            console.log(tags);
-          }}>
-      <Text style={styles.symptomText}>Wrists</Text>
-      </TouchableOpacity>
-
-      <TouchableOpacity
-        style={styles.symptomsCard}
-        onPress={() => {
-            setTags(current => 
-                current.includes("hands")
-                  ? current.filter(tag => tag !== " hands")
-                  : [...current, "hands"]
-              );
-            console.log(tags);
-          }}>
+  style={[
+    styles.symptomsCard,
+    selectedBodyPart === "hands" && styles.symptomsCardSelected
+  ]}
+  onPress={() => {
+    setTags(current =>
+      current.includes("hands") ? [...current] : [...current, "hands"]
+    );
+    setSelectedBodyPart("hands");
+  }}
+>
       <Text style={styles.symptomText}>Hands</Text>
       </TouchableOpacity>
+
+      {/* Wrists */}
+      <TouchableOpacity
+  style={[
+    styles.symptomsCard,
+    selectedBodyPart === "wrists" && styles.symptomsCardSelected
+  ]}
+  onPress={() => {
+    setTags(current =>
+      current.includes("wrists") ? [...current] : [...current, "wrists"]
+    );
+    setSelectedBodyPart("wrists");
+  }}
+>
+      <Text style={styles.symptomText}>Wrists</Text>
+      </TouchableOpacity>
         </View>
 
 
-        {/* Mid Body */}
+        {/* MID */}
         <View style={styles.box}>
         <Text style={styles.subTitle}>Mid Body:</Text>
-        <TouchableOpacity style={styles.symptomsCard} onPress={() => console.log('Sore')}>
+
+        {/* Mid Back */}
+        <TouchableOpacity
+  style={[
+    styles.symptomsCard,
+    selectedBodyPart === "mid back" && styles.symptomsCardSelected
+  ]}
+  onPress={() => {
+    setTags(current =>
+      current.includes("mid back") ? [...current] : [...current, "mid back"]
+    );
+    setSelectedBodyPart("mid back");
+  }}
+>
             <Text style={styles.symptomText}>Mid Back</Text>
-        </TouchableOpacity>
+            </TouchableOpacity>
 
-        <TouchableOpacity style={styles.symptomsCard} onPress={() => console.log('Stiff')}>
+            {/* Lower Back */}
+            <TouchableOpacity
+  style={[
+    styles.symptomsCard,
+    selectedBodyPart === "lower back" && styles.symptomsCardSelected
+  ]}
+  onPress={() => {
+    setTags(current =>
+      current.includes("lower back") ? [...current] : [...current, "lower back"]
+    );
+    setSelectedBodyPart("lower back");
+  }}
+>
             <Text style={styles.symptomText}>Lower Back</Text>
-        </TouchableOpacity>
+            </TouchableOpacity>
 
-        <TouchableOpacity style={styles.symptomsCard} onPress={() => console.log('Stiff')}>
-            <Text style={styles.symptomText}>Abs/Obliques</Text>
-        </TouchableOpacity>
+            {/* Abs */}
+            <TouchableOpacity
+  style={[
+    styles.symptomsCard,
+    selectedBodyPart === "abs" && styles.symptomsCardSelected
+  ]}
+  onPress={() => {
+    setTags(current =>
+      current.includes("abs") ? [...current] : [...current, "abs"]
+    );
+    setSelectedBodyPart("abs");
+  }}
+>
+            <Text style={styles.symptomText}>Abs</Text>
+            </TouchableOpacity>
 
-        <TouchableOpacity style={styles.symptomsCard} onPress={() => console.log('Stiff')}>
+            {/* Obliques */}
+            <TouchableOpacity
+  style={[
+    styles.symptomsCard,
+    selectedBodyPart === "obliques" && styles.symptomsCardSelected
+  ]}
+  onPress={() => {
+    setTags(current =>
+      current.includes("olbiques") ? [...current] : [...current, "obliques"]
+    );
+    setSelectedBodyPart("obliques");
+  }}
+>
+            <Text style={styles.symptomText}>Obliques</Text>
+            </TouchableOpacity>
+
+            {/* Ribs */}
+            <TouchableOpacity
+  style={[
+    styles.symptomsCard,
+    selectedBodyPart === "ribs" && styles.symptomsCardSelected
+  ]}
+  onPress={() => {
+    setTags(current =>
+      current.includes("ribs") ? [...current] : [...current, "ribs"]
+    );
+    setSelectedBodyPart("ribs");
+  }}
+>
             <Text style={styles.symptomText}>Ribs</Text>
-        </TouchableOpacity>
+            </TouchableOpacity>
 
-        <TouchableOpacity style={styles.symptomsCard} onPress={() => console.log('Stiff')}>
+            {/* Hips */}
+            <TouchableOpacity
+  style={[
+    styles.symptomsCard,
+    selectedBodyPart === "hips" && styles.symptomsCardSelected
+  ]}
+  onPress={() => {
+    setTags(current =>
+      current.includes("hips") ? [...current] : [...current, "hips"]
+    );
+    setSelectedBodyPart("hips");
+  }}
+>
             <Text style={styles.symptomText}>Hips</Text>
-        </TouchableOpacity>
+            </TouchableOpacity>
 
-        </View>
+            </View>
     
 
-    {/* Lower Body */}
+    {/* LOWER */}
     <View style={styles.box}>
         <Text style={styles.subTitle}>Lower Body:</Text>
-        <TouchableOpacity style={styles.symptomsCard} onPress={() => console.log('Sore')}>
-            <Text style={styles.symptomText}>Glutes</Text>
+
+                {/* Glutes */}
+                <TouchableOpacity
+  style={[
+    styles.symptomsCard,
+    selectedBodyPart === "glutes" && styles.symptomsCardSelected
+  ]}
+  onPress={() => {
+    setTags(current =>
+      current.includes("glutes") ? [...current] : [...current, "glutes"]
+    );
+    setSelectedBodyPart("glutes");
+  }}
+>
+        <Text style={styles.symptomText}>Glutes</Text>
         </TouchableOpacity>
 
-        <TouchableOpacity style={styles.symptomsCard} onPress={() => console.log('Stiff')}>
-            <Text style={styles.symptomText}>Groin</Text>
+        {/* Groin */}
+        <TouchableOpacity
+  style={[
+    styles.symptomsCard,
+    selectedBodyPart === "groin" && styles.symptomsCardSelected
+  ]}
+  onPress={() => {
+    setTags(current =>
+      current.includes("groin") ? [...current] : [...current, "groin"]
+    );
+    setSelectedBodyPart("groin");
+  }}
+>
+        <Text style={styles.symptomText}>Groin</Text>
         </TouchableOpacity>
 
-        <TouchableOpacity style={styles.symptomsCard} onPress={() => console.log('Stiff')}>
-            <Text style={styles.symptomText}>Quads</Text>
+        {/* Quads */}
+        <TouchableOpacity
+  style={[
+    styles.symptomsCard,
+    selectedBodyPart === "quads" && styles.symptomsCardSelected
+  ]}
+  onPress={() => {
+    setTags(current =>
+      current.includes("quads") ? [...current] : [...current, "quads"]
+    );
+    setSelectedBodyPart("quads");
+  }}
+>
+        <Text style={styles.symptomText}>Quads</Text>
         </TouchableOpacity>
 
-        <TouchableOpacity style={styles.symptomsCard} onPress={() => console.log('Stiff')}>
-            <Text style={styles.symptomText}>Hamstrings</Text>
+        {/* Hamstrings */}
+        <TouchableOpacity
+  style={[
+    styles.symptomsCard,
+    selectedBodyPart === "hamstrings" && styles.symptomsCardSelected
+  ]}
+  onPress={() => {
+    setTags(current =>
+      current.includes("hamstrings") ? [...current] : [...current, "hamstrings"]
+    );
+    setSelectedBodyPart("hamstrings");
+  }}
+>
+        <Text style={styles.symptomText}>Hamstrings</Text>
         </TouchableOpacity>
 
-        <TouchableOpacity style={styles.symptomsCard} onPress={() => console.log('Stiff')}>
-            <Text style={styles.symptomText}>Knees</Text>
+        {/* Knees */}
+        <TouchableOpacity
+  style={[
+    styles.symptomsCard,
+    selectedBodyPart === "knees" && styles.symptomsCardSelected
+  ]}
+  onPress={() => {
+    setTags(current =>
+      current.includes("knees") ? [...current] : [...current, "knees"]
+    );
+    setSelectedBodyPart("knees");
+  }}
+>
+        <Text style={styles.symptomText}>Knees</Text>
         </TouchableOpacity>
 
-        <TouchableOpacity style={styles.symptomsCard} onPress={() => console.log('Stiff')}>
-            <Text style={styles.symptomText}>Calves</Text>
+        {/* Calves */}
+        <TouchableOpacity
+  style={[
+    styles.symptomsCard,
+    selectedBodyPart === "calves" && styles.symptomsCardSelected
+  ]}
+  onPress={() => {
+    setTags(current =>
+      current.includes("calves") ? [...current] : [...current, "calves"]
+    );
+    setSelectedBodyPart("calves");
+  }}
+>
+        <Text style={styles.symptomText}>Calves</Text>
         </TouchableOpacity>
 
-        <TouchableOpacity style={styles.symptomsCard} onPress={() => console.log('Stiff')}>
-            <Text style={styles.symptomText}>Shins</Text>
+        {/* Shins */}
+        <TouchableOpacity
+  style={[
+    styles.symptomsCard,
+    selectedBodyPart === "shins" && styles.symptomsCardSelected
+  ]}
+  onPress={() => {
+    setTags(current =>
+      current.includes("shins") ? [...current] : [...current, "shins"]
+    );
+    setSelectedBodyPart("shins");
+  }}
+>
+        <Text style={styles.symptomText}>Shins</Text>
         </TouchableOpacity>
 
-        <TouchableOpacity style={styles.symptomsCard} onPress={() => console.log('Stiff')}>
-            <Text style={styles.symptomText}>Ankles</Text>
+        {/* Ankles */}
+        <TouchableOpacity
+  style={[
+    styles.symptomsCard,
+    selectedBodyPart === "ankles" && styles.symptomsCardSelected
+  ]}
+  onPress={() => {
+    setTags(current =>
+      current.includes("ankles") ? [...current] : [...current, "ankles"]
+    );
+    setSelectedBodyPart("ankles");
+  }}
+>
+        <Text style={styles.symptomText}>Ankles</Text>
         </TouchableOpacity>
 
-        <TouchableOpacity style={styles.symptomsCard} onPress={() => console.log('Stiff')}>
-            <Text style={styles.symptomText}>Feet/Toes</Text>
+        {/* Feet */}
+        <TouchableOpacity
+  style={[
+    styles.symptomsCard,
+    selectedBodyPart === "feet" && styles.symptomsCardSelected
+  ]}
+  onPress={() => {
+    setTags(current =>
+      current.includes("feet") ? [...current] : [...current, "feet"]
+    );
+    setSelectedBodyPart("feet");
+  }}
+>
+        <Text style={styles.symptomText}>Feet</Text>
         </TouchableOpacity>
+
+        {/* Toes */}
+        <TouchableOpacity
+  style={[
+    styles.symptomsCard,
+    selectedBodyPart === "toes" && styles.symptomsCardSelected
+  ]}
+  onPress={() => {
+    setTags(current =>
+      current.includes("toes") ? [...current] : [...current, "toes"]
+    );
+    setSelectedBodyPart("toes");
+  }}
+>
+        <Text style={styles.symptomText}>Toes</Text>
+        </TouchableOpacity>
+
         </View>
 
-        {/* Other */}
-        <View>
+    {/* Other */}
+    <View>
             <Button onPress={() => {
             results.forEach((result) => {
-            const areEqual = result.tags.sort().join() === tags.sort().join();
-            console.log(areEqual);
-            if (areEqual) {
-                setResult(result);
-                console.log(result);
-            }
+                const areEqual = result.tags.sort().join() === tags.sort().join();
+                if (areEqual) {
+                  console.log('Match found:', result);
+                  setResult(result);
+                  setShowResult(true);
+                }
             setTags([]);
             })
             }}>
                 Results
             </Button>
+        </View>
+
+        </View>
+
+        <View style={{ display: showResult ? 'flex' : 'none' }}>
+        <Text style={styles.subTitle}>Here are your stretches and massages:</Text>
+        <Text style={styles.resultText}>{result.stretches}</Text>
+        <Text style={styles.resultText}>{result.massage}</Text>
+        <Button onPress={() => {
+            setShowResult(false);
+            setTags([]);
+            setResult({stretches: "", massage: ""});
+            setSelectedSymptom(null);
+            setSelectedBodyPart(null);  
+        }}>
+            Back
+        </Button>
         </View>
       
     </ScrollView>
@@ -312,15 +592,23 @@ const styles = StyleSheet.create({
     fontSize: 20,
     marginBottom: 10,
   },
-  symptomsCard: {           
-    height: 40,            
+  symptomsCard: {
     backgroundColor: '#eee',
-    justifyContent: 'center',
-    alignItems: 'center',
+    padding: 16,
     borderRadius: 8,
-    marginVertical: 5,
+    marginBottom: 10,
+    alignItems: 'center',
   },
   symptomText: {
     fontSize: 18,
   },
+  symptomsCardSelected: {
+    backgroundColor: '#4CAF50', // or any highlight color you like
+  },
+  resultText: {
+    fontSize: 16,
+    marginBottom: 10,
+    lineHeight: 22,
+  }
+  
 });

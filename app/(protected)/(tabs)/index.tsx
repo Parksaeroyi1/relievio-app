@@ -1,9 +1,13 @@
 import { StyleSheet, Text, View, ScrollView, TouchableOpacity } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import { SafeAreaView } from 'react-native-safe-area-context'
+import { Button } from '@react-navigation/elements';
+import { useRouter } from 'expo-router';
+
 
 export default function HomeScreen() {
-  
+
+  const router = useRouter();
   const [stretch, setStretch] = useState({name: "", videoUrl: ""});
 
   const fetchRecommendedStretches = async () => {
@@ -34,34 +38,41 @@ export default function HomeScreen() {
       {/* Daily Recommended Stretches */}
       <View>
         <Text style={ styles.subTitle }> Daily Recommended Stretch </Text>
-        <View style={ styles.progressCard}>
+       
 
-          <View style={ styles.box }>
-          <Text>{stretch.name}</Text>
-          <Text>{stretch.videoUrl}</Text>
-          </View>
+        
+            <TouchableOpacity style={styles.box} onPress={() => console.log('Play video')}>
+            <Text style={{ fontWeight: 'bold', fontSize: 16 }}>{stretch.name}</Text>
+            <Text style={{ color: 'blue' }}>▶️ Watch Video</Text>
+            </TouchableOpacity>
+        
 
         </View>
         
-      </View>
 
       {/* Mood Board */}
       <View>
-        <Text style={ styles.subTitle }> How you feeling today? </Text>
-        <View style={ styles.progressCard}>
-
-          <TouchableOpacity style={ styles.box } onPress={() => console.log('Happy')}>
-            <Text style={ styles.symptomText }>Happy</Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={ styles.box } onPress={() => console.log('Sad')}>
-            <Text style={ styles.symptomText }>Sad</Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={ styles.box } onPress={() => console.log('Angry')}>
-            <Text style={ styles.symptomText }>Angry</Text>
-          </TouchableOpacity>
-
-      </View> 
+      <Text style={ styles.subTitle }> How are you feeling today? </Text>
+            <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+        <TouchableOpacity style={styles.moodButton} onPress={() => console.log('😊 happy')}>
+          <Text style={styles.symptomText}>😊</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.moodButton} onPress={() => console.log('😐 okay')}>
+          <Text style={styles.symptomText}>😐</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.moodButton} onPress={() => console.log('😣 sad')}>
+          <Text style={styles.symptomText}>😣</Text>
+        </TouchableOpacity>
       </View>
+      </View>
+
+      {/* Daily Recommended Stretches */}
+      <View>
+        <Text style={ styles.subTitle }> What's bothering you today? </Text>
+       
+        <Button onPress={() => router.navigate('/planner')}>Start Your Assessment</Button>;
+      
+        </View>
 
 
     </ScrollView>
@@ -80,6 +91,7 @@ const styles = StyleSheet.create({
   subTitle: {
     fontSize: 18,
     marginBottom: 10,
+    marginTop: 20,
   },
   progressCard: {
     backgroundColor: '#f0f0f0',
@@ -94,6 +106,16 @@ const styles = StyleSheet.create({
     borderColor: '#000',
     borderWidth: 1,
     height: 100,
-  }
-
+  },
+  moodButton: {
+    backgroundColor: '#fff',
+    padding: 20,
+    borderRadius: 50,
+    width: 70,
+    height: 70,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginHorizontal: 5,
+  },
+  
 })

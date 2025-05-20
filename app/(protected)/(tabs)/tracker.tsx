@@ -1,6 +1,7 @@
-import { StyleSheet, Text, View, ScrollView, TextInput, Keyboard } from 'react-native'
+import { StyleSheet, Text, View, ScrollView, TextInput, Keyboard, TouchableOpacity } from 'react-native'
 import React, { useState, useEffect } from 'react'
 import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context'
+
 
 export default function TrackerScreen() {
   
@@ -20,6 +21,17 @@ export default function TrackerScreen() {
     };
   }, []);
 
+  const [weeklyProgress, setWeeklyProgress] = useState([
+    { day: 'Monday', completed: false },
+    { day: 'Tuesday', completed: false },
+    { day: 'Wednesday', completed: false },
+    { day: 'Thursday', completed: false },
+    { day: 'Friday', completed: false },
+    { day: 'Saturday ', completed: false },
+    { day: 'Sunday', completed: false },
+  ]);
+
+  
 
   return (
     <ScrollView style={ styles.container }>
@@ -34,19 +46,36 @@ export default function TrackerScreen() {
 
       {/* Need to do */}
       <View>
-        <Text style={ styles.subTitle }> My stretches </Text>
+        <Text style={ styles.subTitle }> Your Plan </Text>
         <View style={ styles.progressCard}>
           <Text> DO THESE STRETCHES SOON </Text>
         </View>
       </View>
 
-      {/* Calendar */}
-      <View>
-        <Text style={ styles.subTitle }> Calendar </Text>
-        <View style={ styles.box }>
-          <Text></Text>
-        </View>
-      </View>
+
+       {/* To do this week */}
+       <View>
+  <Text style={styles.subTitle}>Mark when you did your stretches/massages</Text>
+  {weeklyProgress.map((item, index) => (
+    <TouchableOpacity
+      key={index}
+      onPress={() => {
+        const updated = [...weeklyProgress];
+        updated[index].completed = !updated[index].completed;
+        setWeeklyProgress(updated);
+      }}
+      style={[
+        styles.progressCard,
+        item.completed && { backgroundColor: '#c8e6c9' }, // green background if completed
+      ]}
+    >
+      <Text style={{ textDecorationLine: item.completed ? 'line-through' : 'none' }}>
+        {item.day}
+      </Text>
+    </TouchableOpacity>
+  ))}
+</View>
+
 
        {/* Notes to self */}
        <View>
@@ -97,5 +126,10 @@ const styles = StyleSheet.create({
     padding:16,
     textAlign: 'center',
   },
-
+  calendarContainer: {
+    backgroundColor: '#fff',
+    borderRadius: 10,
+    padding: 10,
+    marginBottom: 20,
+  },
 })
