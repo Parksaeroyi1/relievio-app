@@ -1,135 +1,210 @@
-import { StyleSheet, Text, View, ScrollView, TextInput, Keyboard, TouchableOpacity } from 'react-native'
-import React, { useState, useEffect } from 'react'
-import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context'
+import React, { useState, useEffect, useCallback } from 'react';
+import {
+  StyleSheet, Text, View, ScrollView, TouchableOpacity, Alert
+} from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import { Ionicons } from '@expo/vector-icons';
+import { useFocusEffect } from 'expo-router';
+import { getCurrentUserEmail } from '../../../util/auth'; // Adjust the import path as needed
+
 
 
 export default function TrackerScreen() {
+  const [planner, setPlanner] = useState<{ stretches: string; massage: string; done?: boolean; _id?: string }[]>([]);
+
+  const fetchResults = async () => {
+    const email = await getCurrentUserEmail();
+
+    if (!email) {
+      Alert.alert('User not logged in');
+      return;
+    }
+
+    try {
+      const response = await fetch(`http://localhost:8000/api/user/email/${email}/planner`);
+      const data = await response.json();
+
+      if (response.ok || response.status === 200) {
+        setPlanner(data.planner || []);
+      } else {
+        Alert.alert('Failed to load planner', data.message);
+      }
+    } catch (error) {
+      console.error(error);
+      Alert.alert('Server error', 'Could not load planner data');
+    }
+  };
+
+  const markPlannerItemDone = async (itemId?: string) => {
+    const email = await getCurrentUserEmail();
+    if (!email || !itemId) {
+      Alert.alert('Missing user or item ID');
+      return;
+    }
+
+    try {
+      const response = await fetch(`http://localhost:8000/api/user/email/${email}/planner/${itemId}`, {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        fetchResults(); // Refresh the planner list after marking done
+      } else {
+        Alert.alert('Failed to update item', data.message);
+      }
+    } catch (error) {
+      console.error(error);
+      Alert.alert('Server error', 'Could not update planner item');
+    }
+  };
+
+  useFocusEffect(
+    useCallback(() => {
+      fetchResults();
+    }, [])
+  );
   
-  const [keyboardStatus, setKeyboardStatus] = useState('Keyboard Hidden');
+ /* useEffect(() => {
+    console.log('or');
+    fetchResults();
 
-  useEffect(() => {
-    const showSubscription = Keyboard.addListener('keyboardDidShow', () => {
-      setKeyboardStatus('Keyboard Shown');
-    });
-    const hideSubscription = Keyboard.addListener('keyboardDidHide', () => {
-      setKeyboardStatus('Keyboard Hidden');
-    });
+  }, []); */
 
-    return () => {
-      showSubscription.remove();
-      hideSubscription.remove();
-    };
-  }, []);
-
-  const [weeklyProgress, setWeeklyProgress] = useState([
-    { day: 'Monday', completed: false },
-    { day: 'Tuesday', completed: false },
-    { day: 'Wednesday', completed: false },
-    { day: 'Thursday', completed: false },
-    { day: 'Friday', completed: false },
-    { day: 'Saturday ', completed: false },
-    { day: 'Sunday', completed: false },
-  ]);
-
-  
 
   return (
-    <ScrollView style={ styles.container }>
-
-      {/* Header */}
+    <ScrollView style={styles.container}>
       <SafeAreaView>
-      <View>
-      <Text style={ styles.title }>Tracker</Text>
-      </View>
+        <View style={styles.header}>
+          <Text style={styles.title}>Your Relief Tracker</Text>
+          <TouchableOpacity>
+            <Ionicons name="filter" size={24} color="white" />
+          </TouchableOpacity>
+        </View>
       </SafeAreaView>
 
-
-      {/* Need to do */}
-      <View>
-        <Text style={ styles.subTitle }> Your Plan </Text>
-        <View style={ styles.progressCard}>
-          <Text> DO THESE STRETCHES SOON </Text>
-        </View>
+      {/* Calendar View */}
+      <View style={styles.section}>
+        <Text style={styles.subTitle}>Calendar</Text>
       </View>
 
+      {/* Sessions for Selected Date */}
+      <View style={styles.section}>
+        <Text style={styles.subTitle}>
+        </Text>
 
-       {/* To do this week */}
-       <View>
-  <Text style={styles.subTitle}>Mark when you did your stretches/massages</Text>
-  {weeklyProgress.map((item, index) => (
-    <TouchableOpacity
-      key={index}
-      onPress={() => {
-        const updated = [...weeklyProgress];
-        updated[index].completed = !updated[index].completed;
-        setWeeklyProgress(updated);
-      }}
-      style={[
-        styles.progressCard,
-        item.completed && { backgroundColor: '#c8e6c9' }, // green background if completed
-      ]}
-    >
-      <Text style={{ textDecorationLine: item.completed ? 'line-through' : 'none' }}>
-        {item.day}
-      </Text>
-    </TouchableOpacity>
-  ))}
-</View>
+        
+          <Text style={{ color: 'white', fontStyle: 'italic' }}>
+            No sessions logged on this date.
+          </Text>
 
+        {planner && planner.map((item, index) => (
+          <View key={index} style={styles.sessionCard}>
+            <Text style={styles.sessionText}>
+              {item.stretches || 'No stretch'} - {item.massage || 'No massage'}
+            </Text>
 
-       {/* Notes to self */}
-       <View>
-        <Text style={ styles.subTitle }> Notes to self </Text>
-       <TextInput style={styles.input} placeholder="Click here…" onSubmitEditing={Keyboard.dismiss}
-        />
-        <Text style={styles.status}>{keyboardStatus}</Text>
+          {item.done? (
+            <Text style={{ color: 'green', marginTop: 4 }}>✅ Done</Text>
+          ) : (
+            <TouchableOpacity
+            onPress={() => markPlannerItemDone(item._id)}
+        style={styles.doneButton}
+            >
+              <Text style={{ color: 'white'}}>Mark Done</Text>
+            </TouchableOpacity>
+          )
+
+          }
+          </View>
+        ))}
       </View>
 
-    
     </ScrollView>
-)}  
+  );
+}
+
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 20,
-    backgroundColor: '#b5caa0',
+    backgroundColor: 'black',
+  },
+  header: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 20,
   },
   title: {
     fontSize: 30,
-    marginBottom: 20,
+    color: 'white',
+    fontWeight: '700',
   },
   subTitle: {
-    fontSize: 18,
+    fontSize: 20,
+    fontWeight: '600',
+    marginBottom: 10,
+    color: 'white',
+  },
+  section: {
+    marginBottom: 30,
+  },
+  sessionCard: {
+    flexDirection: 'row',         
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    backgroundColor: '#1f1f1f',
+    padding: 16,
+    borderRadius: 12,
     marginBottom: 10,
   },
-  progressCard: {
-    backgroundColor: '#f0f0f0',
-    padding: 20,
-    borderRadius: 10,
-    marginBottom: 20,
+  sessionText: {
+    color: 'white',
+    fontSize: 16,
+    flexShrink: 1,  // in case text is too long
   },
-  box: {
-    marginBottom: 20,
-    padding: 10,
-    borderRadius: 10,
-    borderColor: '#000',
-    borderWidth: 1,
-    height: 300,
+  statsRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
   },
-  input: {
-    padding: 10,
-    borderWidth: 0.5,
-    borderRadius: 4,
+  statBox: {
+    backgroundColor: '#1f1f1f',
+    padding: 16,
+    borderRadius: 12,
+    width: '30%',
+    alignItems: 'center',
   },
-  status: {
-    padding:16,
+  statNumber: {
+    fontSize: 24,
+    fontWeight: '700',
+    color: '#0d74ff',
+  },
+  statLabel: {
+    fontSize: 12,
+    color: 'white',
+    marginTop: 4,
     textAlign: 'center',
   },
-  calendarContainer: {
-    backgroundColor: '#fff',
-    borderRadius: 10,
-    padding: 10,
-    marginBottom: 20,
+  addButton: {
+    backgroundColor: '#0d74ff',
+    borderRadius: 32,
+    width: 64,
+    height: 64,
+    justifyContent: 'center',
+    alignItems: 'center',
+    alignSelf: 'center',
+    marginBottom: 40,
   },
-})
+  doneButton: {
+    backgroundColor: '#0d74ff',
+    borderRadius: 8,
+    paddingVertical: 8,
+    paddingHorizontal: 16,
+  },
+});

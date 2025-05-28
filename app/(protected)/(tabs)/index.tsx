@@ -1,121 +1,214 @@
-import { StyleSheet, Text, View, ScrollView, TouchableOpacity } from 'react-native'
-import React, { useEffect, useState } from 'react'
+import { StyleSheet, Text, View, ScrollView, TouchableOpacity, Linking } from 'react-native'
+import React, { useEffect, useState, useRef, useCallback } from 'react'
 import { SafeAreaView } from 'react-native-safe-area-context'
-import { Button } from '@react-navigation/elements';
-import { useRouter } from 'expo-router';
-
+import { useRouter, useFocusEffect } from 'expo-router';
 
 export default function HomeScreen() {
 
   const router = useRouter();
   const [stretch, setStretch] = useState({name: "", videoUrl: ""});
+  const scrollViewRef = useRef(null);
 
   const fetchRecommendedStretches = async () => {
     const response = await fetch('http://localhost:8000/api/recommendations');
     const data = await response.json();
-    const randomIndex = Math.round(Math.random() * data.length);
-    console.log(data[randomIndex]);
-    console.log(Math.round(randomIndex));
+    const randomIndex = Math.floor(Math.random() * data.length);
     setStretch(data[randomIndex]);
-    return data;
   }
   
-    useEffect(() => {
-      fetchRecommendedStretches()
-    }, []);
-    
+  useEffect(() => {
+    fetchRecommendedStretches();
+  }, []);
 
+  // Scroll to top when screen gains focus
+  useFocusEffect(
+    useCallback(() => {
+      if (scrollViewRef.current) {
+        scrollViewRef.current.scrollTo({ y: 0, animated: false });
+      }
+    }, [])
+  );
   return (
-    <ScrollView style={ styles.container }>
-
-      {/* Header */}
+    <ScrollView ref={scrollViewRef}
+    style={styles.container}
+    contentContainerStyle={{ paddingBottom: 60 }}>
       <SafeAreaView>
-      <View>
-      <Text style={ styles.title }>Home</Text>
-      </View>
+        <View style={styles.headerContainer}>
+          <Text style={styles.title}>Welcome Back 👋</Text>
+          <Text style={styles.subText}>Your recovery starts today. Let’s stay on track.</Text>
+        </View>
       </SafeAreaView>
 
-      {/* Daily Recommended Stretches */}
-      <View>
-        <Text style={ styles.subTitle }> Daily Recommended Stretch </Text>
-       
-
-        
-            <TouchableOpacity style={styles.box} onPress={() => console.log('Play video')}>
-            <Text style={{ fontWeight: 'bold', fontSize: 16 }}>{stretch.name}</Text>
-            <Text style={{ color: 'blue' }}>▶️ Watch Video</Text>
-            </TouchableOpacity>
-        
-
-        </View>
-        
-
-      {/* Mood Board */}
-      <View>
-      <Text style={ styles.subTitle }> How are you feeling today? </Text>
-            <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
-        <TouchableOpacity style={styles.moodButton} onPress={() => console.log('😊 happy')}>
-          <Text style={styles.symptomText}>😊</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.moodButton} onPress={() => console.log('😐 okay')}>
-          <Text style={styles.symptomText}>😐</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.moodButton} onPress={() => console.log('😣 sad')}>
-          <Text style={styles.symptomText}>😣</Text>
+      {/* Daily Recommended Stretch */}
+      <View style={[styles.card, styles.darkBlueBackground]}>
+        <Text style={styles.cardTitle}>Daily Recommended Stretch</Text>
+        <TouchableOpacity
+          style={styles.stretchBox}
+          onPress={() => Linking.openURL(stretch.videoUrl)}
+          activeOpacity={0.7}
+        >
+          <Text style={styles.stretchName}>{stretch.name}</Text>
+          <Text style={styles.watchVideo}>▶️ Watch Video</Text>
         </TouchableOpacity>
       </View>
+
+      {/* Your Stats */}
+      <View style={[styles.card, styles.nearBlackBackground]}>
+        <Text style={styles.cardTitle}>Your Stats</Text>
+        <View style={styles.statsRow}>
+          <View style={styles.statBox}>
+            <Text style={styles.statNumber}>8</Text>
+            <Text style={styles.statLabel}>Stretches Done This Week</Text>
+          </View>
+          <View style={styles.statBox}>
+            <Text style={styles.statNumber}>5</Text>
+            <Text style={styles.statLabel}>Streak (Days)</Text>
+          </View>
+        </View>
       </View>
 
-      {/* Daily Recommended Stretches */}
-      <View>
-        <Text style={ styles.subTitle }> What's bothering you today? </Text>
-       
-        <Button onPress={() => router.navigate('/planner')}>Start Your Assessment</Button>;
-      
-        </View>
-
-
+     
+      {/* Assessment Call to Action */}
+      <View style={[styles.card, styles.darkBlueBackground]}>
+        <Text style={styles.cardTitle}>What’s bothering you today?</Text>
+        <TouchableOpacity style={styles.assessButton} onPress={() => router.navigate('/planner')}>
+          <Text style={styles.assessButtonText}>Start Assessment</Text>
+        </TouchableOpacity>
+      </View>
     </ScrollView>
-)}  
+  )
+}
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 20,
-    backgroundColor: '#b5caa0',
+    backgroundColor: '#121212', // dark background
+    paddingHorizontal: 20,
+    paddingTop: 20,
   },
+
+  headerContainer: {
+    marginBottom: 30,
+  },
+
   title: {
-    fontSize: 30,
-    marginBottom: 20,
+    fontSize: 34,
+    fontWeight: '700',
+    color: '#EEEEEE', // bright text for contrast
   },
-  subTitle: {
+
+  subText: {
     fontSize: 18,
-    marginBottom: 10,
-    marginTop: 20,
+    color: '#CCCCCC',
+    marginTop: 6,
   },
-  progressCard: {
-    backgroundColor: '#f0f0f0',
+
+  card: {
+    borderRadius: 16,
     padding: 20,
-    borderRadius: 10,
-    marginBottom: 20,
+    marginBottom: 24,
+    shadowColor: "#000",
+    shadowOpacity: 0.7,
+    shadowRadius: 10,
+    shadowOffset: { width: 0, height: 4 },
+    elevation: 5,
   },
-  box: {
-    marginBottom: 20,
-    padding: 10,
-    borderRadius: 10,
-    borderColor: '#000',
-    borderWidth: 1,
-    height: 100,
+
+  darkBlueBackground: {
+    backgroundColor: '#0d47a1', // rich dark blue
   },
-  moodButton: {
-    backgroundColor: '#fff',
-    padding: 20,
-    borderRadius: 50,
-    width: 70,
-    height: 70,
+
+  darkGoldBackground: {
+    backgroundColor: '#5D4B00', // muted dark gold
+  },
+
+  darkGrayBackground: {
+    backgroundColor: '#2A2A2A', // dark gray card bg
+  },
+
+  nearBlackBackground: {
+    backgroundColor: '#222222', // very dark gray for variety
+  },
+
+  cardTitle: {
+    fontSize: 22,
+    fontWeight: '600',
+    marginBottom: 12,
+    color: '#EEEEEE',
+  },
+
+  stretchBox: {
+    backgroundColor: '#1565c0', // slightly lighter blue accent
+    borderRadius: 12,
+    paddingVertical: 20,
+    paddingHorizontal: 16,
     justifyContent: 'center',
-    alignItems: 'center',
-    marginHorizontal: 5,
   },
-  
-})
+
+  stretchName: {
+    fontSize: 20,
+    fontWeight: '700',
+    color: '#FFFFFF',
+    marginBottom: 8,
+  },
+
+  watchVideo: {
+    fontSize: 16,
+    color: '#90caf9', // light blue link color
+    fontWeight: '600',
+  },
+
+  tipText: {
+    fontSize: 16,
+    color: '#BBBBBB',
+    lineHeight: 22,
+  },
+
+  statsRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+  },
+
+  statBox: {
+    flex: 1,
+    backgroundColor: '#263238', // dark slate blue/gray
+    borderRadius: 12,
+    paddingVertical: 24,
+    paddingHorizontal: 16,
+    marginHorizontal: 8,
+    alignItems: 'center',
+  },
+
+  statNumber: {
+    fontSize: 28,
+    fontWeight: '700',
+    color: '#64B5F6', // soft blue accent
+  },
+
+  statLabel: {
+    marginTop: 6,
+    fontSize: 14,
+    fontWeight: '500',
+    color: '#64B5F6',
+    textAlign: 'center',
+  },
+
+  activityText: {
+    fontSize: 16,
+    color: '#CCCCCC',
+  },
+
+  assessButton: {
+    marginTop: 10,
+    backgroundColor: '#1565c0',
+    paddingVertical: 18,
+    borderRadius: 16,
+    alignItems: 'center',
+  },
+
+  assessButtonText: {
+    color: 'white',
+    fontSize: 20,
+    fontWeight: '700',
+  }
+});

@@ -1,41 +1,82 @@
 import React, { useState } from 'react';
-import { SafeAreaView, View, Text, TextInput, Button } from 'react-native';
+import { useRouter } from 'expo-router';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import {
+  SafeAreaView,
+  View,
+  Text,
+  TextInput,
+  Button,
+  Alert,
+  TouchableOpacity,
+  StyleSheet,
+} from 'react-native';
+import { saveUserEmail } from '../../util/auth'; // Adjust the import path as needed
 
-const LoginScreen: React.FC = () => {
-  const [username, setUsername] = useState('');
+export default function LoginScreen() {
+  const router = useRouter();
+  const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
-  const handleLogin = () => {
-    // In a real app, you would send these to your backend
-    console.log('Logging in with:', { username, password });
-    // After successful login, you would navigate to another screen
+  const handleLogin = async () => {
+    try {
+      const response = await fetch('http://localhost:8000/api/auth/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, password }),
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        // Save email using your util
+        await saveUserEmail(email);
+
+        Alert.alert('Login successful!');
+        router.replace('/(protected)'); // Adjust this path as needed
+      } else {
+        Alert.alert('Login failed', data.message || 'Please check your credentials');
+      }
+    } catch (error) {
+      Alert.alert('Server error', 'Unable to login at the moment');
+      console.error(error);
+    }
   };
 
   return (
-    <SafeAreaView style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-      <View>
-        <Text style={{ fontSize: 24, marginBottom: 20 }}>RELIEVIO</Text>
-      </View>
-      <View style={{ width: '80%' }}>
+    <SafeAreaView style={styles.container}>
+      <Text style={styles.title}>Login</Text>
+
+      <View style={styles.form}>
         <TextInput
-          style={{ height: 40, borderColor: 'gray', borderWidth: 1, marginBottom: 10, paddingHorizontal: 10 }}
-          placeholder="Username or Email"
-          value={username}
-          onChangeText={setUsername}
+          placeholder="Email"
+          value={email}
+          onChangeText={setEmail}
           autoCapitalize="none"
           keyboardType="email-address"
+          style={styles.input}
         />
         <TextInput
-          style={{ height: 40, borderColor: 'gray', borderWidth: 1, marginBottom: 20, paddingHorizontal: 10 }}
           placeholder="Password"
           value={password}
           onChangeText={setPassword}
           secureTextEntry
+          style={styles.input}
         />
         <Button title="Login" onPress={handleLogin} />
+
+        <TouchableOpacity onPress={() => router.push('/(auth)/signup')}>
+          <Text style={styles.link}>Don't have an account? Sign up</Text>
+        </TouchableOpacity>
       </View>
     </SafeAreaView>
   );
-};
+}
 
-export default LoginScreen;
+const styles = StyleSheet.create({
+  container: { flex: 1, justifyContent: 'center', alignItems: 'center', padding: 20 },
+  title: { fontSize: 28, marginBottom: 20 },
+  form: { width: '100%' },
+  input: { borderWidth: 1, borderColor: 'gray', padding: 12, marginBottom: 15, borderRadius: 4 },
+  link: { color: 'blue', marginTop: 15, textAlign: 'center' },
+});

@@ -1,585 +1,233 @@
-import { StyleSheet, Text, View, ScrollView, TouchableOpacity } from 'react-native'
-import React, { useState, useEffect } from 'react'
-import { SafeAreaView } from 'react-native-safe-area-context'
-import { Button } from '@react-navigation/elements';
+import { StyleSheet, Text, View, ScrollView, TouchableOpacity, Alert } from 'react-native';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import { useFocusEffect } from '@react-navigation/native';
+import { useNavigation } from '@react-navigation/native';
 
 
 export default function PlannerScreen() {
+  const [tags, setTags] = useState<string[]>([]);
+  const [result, setResult] = useState({ stretches: "", massage: "" });
+  const [results, setResults] = useState([]);
+  const [showResult, setShowResult] = useState(false);
+  const [selectedSymptom, setSelectedSymptom] = useState<string | null>(null);
+  const [selectedBodyPart, setSelectedBodyPart] = useState<string | null>(null);
+  const navigation = useNavigation();
+  const [loadonce, setLoadOnce] = useState(false);
 
-    const [tags, setTags] = useState<string[]>([]);
-    const [result, setResult] = useState({stretches: "", massage: ""});
-    const [results, setResults] = useState([]);
-    const [showResult, setShowResult] = useState(false);
-    const [selectedSymptom, setSelectedSymptom] = useState(null);
-    const [selectedBodyPart, setSelectedBodyPart] = useState(null);
 
+  const scrollRef = useRef<ScrollView>(null);
 
-    const fetchResults = async () => {
-        const response = await fetch('http://localhost:8000/api/results');
-        const data = await response.json();
-        console.log(data);
-        setResults(data);
-        return data;
+  useFocusEffect(
+    useCallback(() => {
+      if (scrollRef.current) {
+        scrollRef.current.scrollTo({ y: 0, animated: false });
       }
-      
-        useEffect(() => {
-          fetchResults()
-        }, []);
+    }, [])
+  );
+  const createPlanner = async () => {
+    const response = await fetch('http://localhost:8000/api/user/email/elijahsuyatt@gmail.com/planner', {
+      method: 'PATCH',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        stretches: result.stretches,
+        massage: result.massage,
+      }),
+    });
 
-        
+    const data = await response.json();
+    console.log(data);
+    setResult(data);
+  }
+  const fetchResults = async () => {
+    const response = await fetch('http://localhost:8000/api/results');
+    const data = await response.json();
+    console.log(data);
+    setResults(data);
+    return data;
+  };
+
+  useEffect(() => {
+   
+    fetchResults()
+  console.log('fetchResults');
+  }, []);
+
+  const handleShowResults = () => {
+    if (!selectedSymptom || !selectedBodyPart) {
+      Alert.alert(
+        "Missing Selection",
+        "Please select one symptom and one body part before viewing results."
+      );
+      return;
+    }
+
+    results.forEach((result) => {
+      const areEqual = result.tags.sort().join() === tags.sort().join();
+      if (areEqual) {
+        console.log('Match found:', result);
+        setResult(result);
+        setShowResult(true);
+      }
+    });
+
+    setTags([]);
+  };
+
+  const handleReset = () => {
+    setShowResult(false);
+    setTags([]);
+    setResult({ stretches: "", massage: "" });
+    setSelectedSymptom(null);
+    setSelectedBodyPart(null);
+  };
 
   return (
-
-
-    <ScrollView style={ styles.container }>
-
+    <ScrollView style={styles.container} ref={scrollRef}>
       {/* Header */}
       <SafeAreaView>
-      <View>
-      <Text style={ styles.title }>Planner</Text>
-      </View>
+        <View>
+          <Text style={styles.title}>Planner</Text>
+        </View>
       </SafeAreaView>
 
+      {/* Selection screen */}
       <View style={{ display: !showResult ? 'flex' : 'none' }}>
-      {/* SYMPTOMS */}
-      <View style={styles.box}>
-      
-        <Text style={styles.subTitle}>What are your symptoms?(Choose 1)</Text>
+        {/* SYMPTOMS */}
+        <View style={styles.box}>
+          <Text style={styles.subTitle}>What are your symptoms? (Choose 1)</Text>
 
-        {/* Tight */}
-<TouchableOpacity
-  style={[
-    styles.symptomsCard,
-    selectedSymptom === "tight" && styles.symptomsCardSelected
-  ]}
-  onPress={() => {
-    setTags(current =>
-      current.includes("tight") ? [...current] : [...current, "tight"]
-    );
-    setSelectedSymptom("tight");
-  }}
->
-  <Text style={styles.symptomText}>Tight</Text>
-</TouchableOpacity>
+          {["tight", "sore", "stiff"].map(symptom => (
+            <TouchableOpacity
+              key={symptom}
+              style={[
+                styles.symptomsCard,
+                selectedSymptom === symptom && styles.symptomsCardSelected
+              ]}
+              onPress={() => {
+                setTags(current =>
+                  current.includes(symptom) ? [...current] : [...current, symptom]
+                );
+                setSelectedSymptom(symptom);
+              }}
+            >
+              <Text style={styles.symptomText}>{symptom.charAt(0).toUpperCase() + symptom.slice(1)}</Text>
+            </TouchableOpacity>
+          ))}
+        </View>
 
-{/* Sore */}
-<TouchableOpacity
-  style={[
-    styles.symptomsCard,
-    selectedSymptom === "sore" && styles.symptomsCardSelected
-  ]}
-  onPress={() => {
-    setTags(current =>
-      current.includes("sore") ? [...current] : [...current, "sore"]
-    );
-    setSelectedSymptom("sore");
-  }}
->
-  <Text style={styles.symptomText}>Sore</Text>
-</TouchableOpacity>
+        {/* BODY PARTS */}
+        <View>
+          <Text style={styles.subTitle}>Where? (Choose 1)</Text>
 
-{/* Stiff */}
-<TouchableOpacity
-  style={[
-    styles.symptomsCard,
-    selectedSymptom === "stiff" && styles.symptomsCardSelected
-  ]}
-  onPress={() => {
-    setTags(current =>
-      current.includes("stiff") ? [...current] : [...current, "stiff"]
-    );
-    setSelectedSymptom("stiff");
-  }}
->
-  <Text style={styles.symptomText}>Stiff</Text>
-</TouchableOpacity>
- </View>
-        
+          {/* Upper Body */}
+          <View style={styles.box}>
+            <Text style={styles.subTitle}>Upper Body:</Text>
+            {["neck", "shoulders", "traps", "upper back", "chest", "upper arms", "elbows", "forearms", "hands", "wrists"].map(bodyPart => (
+              <TouchableOpacity
+                key={bodyPart}
+                style={[
+                  styles.symptomsCard,
+                  selectedBodyPart === bodyPart && styles.symptomsCardSelected
+                ]}
+                onPress={() => {
+                  setTags(current =>
+                    current.includes(bodyPart) ? [...current] : [...current, bodyPart]
+                  );
+                  setSelectedBodyPart(bodyPart);
+                }}
+              >
+                <Text style={styles.symptomText}>{bodyPart.charAt(0).toUpperCase() + bodyPart.slice(1)}</Text>
+              </TouchableOpacity>
+            ))}
+          </View>
 
+          {/* Mid Body */}
+          <View style={styles.box}>
+            <Text style={styles.subTitle}>Mid Body:</Text>
+            {["mid back", "lower back", "abs", "obliques", "ribs", "hips"].map(bodyPart => (
+              <TouchableOpacity
+                key={bodyPart}
+                style={[
+                  styles.symptomsCard,
+                  selectedBodyPart === bodyPart && styles.symptomsCardSelected
+                ]}
+                onPress={() => {
+                  setTags(current =>
+                    current.includes(bodyPart) ? [...current] : [...current, bodyPart]
+                  );
+                  setSelectedBodyPart(bodyPart);
+                }}
+              >
+                <Text style={styles.symptomText}>{bodyPart.charAt(0).toUpperCase() + bodyPart.slice(1)}</Text>
+              </TouchableOpacity>
+            ))}
+          </View>
 
-        {/* BODY */}
-      <View>
-        <Text style={styles.subTitle}>Where?(Choose 1)</Text>
+          {/* Lower Body */}
+          <View style={styles.box}>
+            <Text style={styles.subTitle}>Lower Body:</Text>
+            {["glutes", "groin", "quads", "hamstrings", "knees", "calves", "shins", "ankles", "feet", "toes"].map(bodyPart => (
+              <TouchableOpacity
+                key={bodyPart}
+                style={[
+                  styles.symptomsCard,
+                  selectedBodyPart === bodyPart && styles.symptomsCardSelected
+                ]}
+                onPress={() => {
+                  setTags(current =>
+                    current.includes(bodyPart) ? [...current] : [...current, bodyPart]
+                  );
+                  setSelectedBodyPart(bodyPart);
+                }}
+              >
+                <Text style={styles.symptomText}>{bodyPart.charAt(0).toUpperCase() + bodyPart.slice(1)}</Text>
+              </TouchableOpacity>
+            ))}
+          </View>
+
+          {/* Show Results Button */}
+          <TouchableOpacity style={styles.primaryButton} onPress={handleShowResults}>
+            <Text style={styles.buttonText}>Show Results</Text>
+          </TouchableOpacity>
+        </View>
       </View>
 
-
-        {/* UPPER */}
-        <View style={styles.box}>
-        <Text style={styles.subTitle}>Upper Body:</Text>
-
-          {/* Neck */}
-          <TouchableOpacity
-  style={[
-    styles.symptomsCard,
-    selectedBodyPart === "neck" && styles.symptomsCardSelected
-  ]}
-  onPress={() => {
-    setTags(current =>
-      current.includes("neck") ? [...current] : [...current, "neck"]
-    );
-    setSelectedBodyPart("neck");
-  }}
->
-      <Text style={styles.symptomText}>Neck</Text>
-      </TouchableOpacity>
-        
-        {/* Shoulders */}
-        <TouchableOpacity
-  style={[
-    styles.symptomsCard,
-    selectedBodyPart === "shoulders" && styles.symptomsCardSelected
-  ]}
-  onPress={() => {
-    setTags(current =>
-      current.includes("shoulders") ? [...current] : [...current, "shoulders"]
-    );
-    setSelectedBodyPart("shoulders");
-  }}
->
-      <Text style={styles.symptomText}>Shoulders</Text>
-      </TouchableOpacity>
-
-        {/*/ Traps */}
-        <TouchableOpacity
-  style={[
-    styles.symptomsCard,
-    selectedBodyPart === "traps" && styles.symptomsCardSelected
-  ]}
-  onPress={() => {
-    setTags(current =>
-      current.includes("traps") ? [...current] : [...current, "traps"]
-    );
-    setSelectedBodyPart("traps");
-  }}
->
-      <Text style={styles.symptomText}>Traps</Text>
-      </TouchableOpacity>
-
-        {/* Upper Back */}
-        <TouchableOpacity
-  style={[
-    styles.symptomsCard,
-    selectedBodyPart === "upper back" && styles.symptomsCardSelected
-  ]}
-  onPress={() => {
-    setTags(current =>
-      current.includes("upper back") ? [...current] : [...current, "upper back"]
-    );
-    setSelectedBodyPart("upper back");
-  }}
->
-      <Text style={styles.symptomText}>Upper Back</Text>
-      </TouchableOpacity>
-
-        {/* Chest */}
-        <TouchableOpacity
-  style={[
-    styles.symptomsCard,
-    selectedBodyPart === "chest" && styles.symptomsCardSelected
-  ]}
-  onPress={() => {
-    setTags(current =>
-      current.includes("chest") ? [...current] : [...current, "chest"]
-    );
-    setSelectedBodyPart("chest");
-  }}
->
-      <Text style={styles.symptomText}>Chest</Text>
-      </TouchableOpacity>
-
-        {/* Upper Arms */}
-        <TouchableOpacity
-  style={[
-    styles.symptomsCard,
-    selectedBodyPart === "upper arms" && styles.symptomsCardSelected
-  ]}
-  onPress={() => {
-    setTags(current =>
-      current.includes("upper arms") ? [...current] : [...current, "upper arms"]
-    );
-    setSelectedBodyPart("upper arms");
-  }}
->
-      <Text style={styles.symptomText}>Upper Arms</Text>
-      </TouchableOpacity>
-
-        {/* Elbows */}
-        <TouchableOpacity
-  style={[
-    styles.symptomsCard,
-    selectedBodyPart === "elbows" && styles.symptomsCardSelected
-  ]}
-  onPress={() => {
-    setTags(current =>
-      current.includes("elbows") ? [...current] : [...current, "elbows"]
-    );
-    setSelectedBodyPart("elbows");
-  }}
->
-      <Text style={styles.symptomText}>Elbows</Text>
-      </TouchableOpacity>
-
-      {/* Forearms */}
-      <TouchableOpacity
-  style={[
-    styles.symptomsCard,
-    selectedBodyPart === "forearms" && styles.symptomsCardSelected
-  ]}
-  onPress={() => {
-    setTags(current =>
-      current.includes("forearms") ? [...current] : [...current, "forearms"]
-    );
-    setSelectedBodyPart("forearms");
-  }}
->
-      <Text style={styles.symptomText}>Forearms</Text>
-      </TouchableOpacity>
-
-        {/* Hands */}
-      <TouchableOpacity
-  style={[
-    styles.symptomsCard,
-    selectedBodyPart === "hands" && styles.symptomsCardSelected
-  ]}
-  onPress={() => {
-    setTags(current =>
-      current.includes("hands") ? [...current] : [...current, "hands"]
-    );
-    setSelectedBodyPart("hands");
-  }}
->
-      <Text style={styles.symptomText}>Hands</Text>
-      </TouchableOpacity>
-
-      {/* Wrists */}
-      <TouchableOpacity
-  style={[
-    styles.symptomsCard,
-    selectedBodyPart === "wrists" && styles.symptomsCardSelected
-  ]}
-  onPress={() => {
-    setTags(current =>
-      current.includes("wrists") ? [...current] : [...current, "wrists"]
-    );
-    setSelectedBodyPart("wrists");
-  }}
->
-      <Text style={styles.symptomText}>Wrists</Text>
-      </TouchableOpacity>
-        </View>
-
-
-        {/* MID */}
-        <View style={styles.box}>
-        <Text style={styles.subTitle}>Mid Body:</Text>
-
-        {/* Mid Back */}
-        <TouchableOpacity
-  style={[
-    styles.symptomsCard,
-    selectedBodyPart === "mid back" && styles.symptomsCardSelected
-  ]}
-  onPress={() => {
-    setTags(current =>
-      current.includes("mid back") ? [...current] : [...current, "mid back"]
-    );
-    setSelectedBodyPart("mid back");
-  }}
->
-            <Text style={styles.symptomText}>Mid Back</Text>
-            </TouchableOpacity>
-
-            {/* Lower Back */}
-            <TouchableOpacity
-  style={[
-    styles.symptomsCard,
-    selectedBodyPart === "lower back" && styles.symptomsCardSelected
-  ]}
-  onPress={() => {
-    setTags(current =>
-      current.includes("lower back") ? [...current] : [...current, "lower back"]
-    );
-    setSelectedBodyPart("lower back");
-  }}
->
-            <Text style={styles.symptomText}>Lower Back</Text>
-            </TouchableOpacity>
-
-            {/* Abs */}
-            <TouchableOpacity
-  style={[
-    styles.symptomsCard,
-    selectedBodyPart === "abs" && styles.symptomsCardSelected
-  ]}
-  onPress={() => {
-    setTags(current =>
-      current.includes("abs") ? [...current] : [...current, "abs"]
-    );
-    setSelectedBodyPart("abs");
-  }}
->
-            <Text style={styles.symptomText}>Abs</Text>
-            </TouchableOpacity>
-
-            {/* Obliques */}
-            <TouchableOpacity
-  style={[
-    styles.symptomsCard,
-    selectedBodyPart === "obliques" && styles.symptomsCardSelected
-  ]}
-  onPress={() => {
-    setTags(current =>
-      current.includes("olbiques") ? [...current] : [...current, "obliques"]
-    );
-    setSelectedBodyPart("obliques");
-  }}
->
-            <Text style={styles.symptomText}>Obliques</Text>
-            </TouchableOpacity>
-
-            {/* Ribs */}
-            <TouchableOpacity
-  style={[
-    styles.symptomsCard,
-    selectedBodyPart === "ribs" && styles.symptomsCardSelected
-  ]}
-  onPress={() => {
-    setTags(current =>
-      current.includes("ribs") ? [...current] : [...current, "ribs"]
-    );
-    setSelectedBodyPart("ribs");
-  }}
->
-            <Text style={styles.symptomText}>Ribs</Text>
-            </TouchableOpacity>
-
-            {/* Hips */}
-            <TouchableOpacity
-  style={[
-    styles.symptomsCard,
-    selectedBodyPart === "hips" && styles.symptomsCardSelected
-  ]}
-  onPress={() => {
-    setTags(current =>
-      current.includes("hips") ? [...current] : [...current, "hips"]
-    );
-    setSelectedBodyPart("hips");
-  }}
->
-            <Text style={styles.symptomText}>Hips</Text>
-            </TouchableOpacity>
-
-            </View>
-    
-
-    {/* LOWER */}
-    <View style={styles.box}>
-        <Text style={styles.subTitle}>Lower Body:</Text>
-
-                {/* Glutes */}
-                <TouchableOpacity
-  style={[
-    styles.symptomsCard,
-    selectedBodyPart === "glutes" && styles.symptomsCardSelected
-  ]}
-  onPress={() => {
-    setTags(current =>
-      current.includes("glutes") ? [...current] : [...current, "glutes"]
-    );
-    setSelectedBodyPart("glutes");
-  }}
->
-        <Text style={styles.symptomText}>Glutes</Text>
-        </TouchableOpacity>
-
-        {/* Groin */}
-        <TouchableOpacity
-  style={[
-    styles.symptomsCard,
-    selectedBodyPart === "groin" && styles.symptomsCardSelected
-  ]}
-  onPress={() => {
-    setTags(current =>
-      current.includes("groin") ? [...current] : [...current, "groin"]
-    );
-    setSelectedBodyPart("groin");
-  }}
->
-        <Text style={styles.symptomText}>Groin</Text>
-        </TouchableOpacity>
-
-        {/* Quads */}
-        <TouchableOpacity
-  style={[
-    styles.symptomsCard,
-    selectedBodyPart === "quads" && styles.symptomsCardSelected
-  ]}
-  onPress={() => {
-    setTags(current =>
-      current.includes("quads") ? [...current] : [...current, "quads"]
-    );
-    setSelectedBodyPart("quads");
-  }}
->
-        <Text style={styles.symptomText}>Quads</Text>
-        </TouchableOpacity>
-
-        {/* Hamstrings */}
-        <TouchableOpacity
-  style={[
-    styles.symptomsCard,
-    selectedBodyPart === "hamstrings" && styles.symptomsCardSelected
-  ]}
-  onPress={() => {
-    setTags(current =>
-      current.includes("hamstrings") ? [...current] : [...current, "hamstrings"]
-    );
-    setSelectedBodyPart("hamstrings");
-  }}
->
-        <Text style={styles.symptomText}>Hamstrings</Text>
-        </TouchableOpacity>
-
-        {/* Knees */}
-        <TouchableOpacity
-  style={[
-    styles.symptomsCard,
-    selectedBodyPart === "knees" && styles.symptomsCardSelected
-  ]}
-  onPress={() => {
-    setTags(current =>
-      current.includes("knees") ? [...current] : [...current, "knees"]
-    );
-    setSelectedBodyPart("knees");
-  }}
->
-        <Text style={styles.symptomText}>Knees</Text>
-        </TouchableOpacity>
-
-        {/* Calves */}
-        <TouchableOpacity
-  style={[
-    styles.symptomsCard,
-    selectedBodyPart === "calves" && styles.symptomsCardSelected
-  ]}
-  onPress={() => {
-    setTags(current =>
-      current.includes("calves") ? [...current] : [...current, "calves"]
-    );
-    setSelectedBodyPart("calves");
-  }}
->
-        <Text style={styles.symptomText}>Calves</Text>
-        </TouchableOpacity>
-
-        {/* Shins */}
-        <TouchableOpacity
-  style={[
-    styles.symptomsCard,
-    selectedBodyPart === "shins" && styles.symptomsCardSelected
-  ]}
-  onPress={() => {
-    setTags(current =>
-      current.includes("shins") ? [...current] : [...current, "shins"]
-    );
-    setSelectedBodyPart("shins");
-  }}
->
-        <Text style={styles.symptomText}>Shins</Text>
-        </TouchableOpacity>
-
-        {/* Ankles */}
-        <TouchableOpacity
-  style={[
-    styles.symptomsCard,
-    selectedBodyPart === "ankles" && styles.symptomsCardSelected
-  ]}
-  onPress={() => {
-    setTags(current =>
-      current.includes("ankles") ? [...current] : [...current, "ankles"]
-    );
-    setSelectedBodyPart("ankles");
-  }}
->
-        <Text style={styles.symptomText}>Ankles</Text>
-        </TouchableOpacity>
-
-        {/* Feet */}
-        <TouchableOpacity
-  style={[
-    styles.symptomsCard,
-    selectedBodyPart === "feet" && styles.symptomsCardSelected
-  ]}
-  onPress={() => {
-    setTags(current =>
-      current.includes("feet") ? [...current] : [...current, "feet"]
-    );
-    setSelectedBodyPart("feet");
-  }}
->
-        <Text style={styles.symptomText}>Feet</Text>
-        </TouchableOpacity>
-
-        {/* Toes */}
-        <TouchableOpacity
-  style={[
-    styles.symptomsCard,
-    selectedBodyPart === "toes" && styles.symptomsCardSelected
-  ]}
-  onPress={() => {
-    setTags(current =>
-      current.includes("toes") ? [...current] : [...current, "toes"]
-    );
-    setSelectedBodyPart("toes");
-  }}
->
-        <Text style={styles.symptomText}>Toes</Text>
-        </TouchableOpacity>
-
-        </View>
-
-    {/* Other */}
-    <View>
-            <Button onPress={() => {
-            results.forEach((result) => {
-                const areEqual = result.tags.sort().join() === tags.sort().join();
-                if (areEqual) {
-                  console.log('Match found:', result);
-                  setResult(result);
-                  setShowResult(true);
-                }
-            setTags([]);
-            })
-            }}>
-                Results
-            </Button>
-        </View>
-
-        </View>
-
-        <View style={{ display: showResult ? 'flex' : 'none' }}>
+      {/* Results screen */}
+      <View style={{ display: showResult ? 'flex' : 'none' }}>
         <Text style={styles.subTitle}>Here are your stretches and massages:</Text>
-        <Text style={styles.resultText}>{result.stretches}</Text>
-        <Text style={styles.resultText}>{result.massage}</Text>
-        <Button onPress={() => {
-            setShowResult(false);
-            setTags([]);
-            setResult({stretches: "", massage: ""});
-            setSelectedSymptom(null);
-            setSelectedBodyPart(null);  
-        }}>
-            Back
-        </Button>
-        </View>
-      
+        <Text style={styles.resultText}>-{result.stretches}</Text>
+        <Text style={styles.resultText}>-{result.massage}</Text>
+
+        <TouchableOpacity style={styles.secondaryButton} onPress={handleReset}>
+          <Text style={styles.buttonText}>Back</Text>
+        </TouchableOpacity>
+
+<TouchableOpacity
+  style={styles.primaryButton}
+  onPress={() => {
+    createPlanner();
+     // Reset Planner state
+     handleReset();
+    // Navigate to Tracker and send newSession as param
+    navigation.navigate('tracker');
+
+  }}
+>
+  <Text style={styles.buttonText}>Add to Tracker</Text>
+</TouchableOpacity>
+      </View>
     </ScrollView>
-)}  
+  );
+}
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 20,
-    backgroundColor: '#b5caa0',
+    backgroundColor: '#121212',  // dark background
   },
   box: {
     marginBottom: 30,
@@ -587,28 +235,76 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 30,
     marginBottom: 20,
+    color: 'white',  // white text
+    fontWeight: 'bold',
   },
   subTitle: {
     fontSize: 20,
     marginBottom: 10,
+    color: '#ddd',  // light gray text
+    fontWeight: '600',
+    paddingBottom: 20,
   },
   symptomsCard: {
-    backgroundColor: '#eee',
+    backgroundColor: '#1E1E1E',  // dark gray card bg
     padding: 16,
     borderRadius: 8,
     marginBottom: 10,
     alignItems: 'center',
+    borderWidth: 1,
+    borderColor: '#333',  // subtle border for cards
   },
   symptomText: {
     fontSize: 18,
+    color: '#eee',  // light text inside cards
   },
   symptomsCardSelected: {
-    backgroundColor: '#4CAF50', // or any highlight color you like
+    backgroundColor: '#3B82F6', // bright blue accent for selection
+    borderColor: '#3B82F6', // border same as background when selected
   },
   resultText: {
-    fontSize: 16,
+    fontSize: 17,
+    lineHeight: 26,
+    color: '#f3f4f6', // softer light
+    fontWeight: '500',
+    letterSpacing: 0.3,
+    marginBottom: 12,
+    fontStyle: 'italic',
+    textShadowColor: 'rgba(0, 0, 0, 0.3)',
+    textShadowOffset: { width: 0, height: 1 },
+    textShadowRadius: 1,
+  },
+  primaryButton: {
+    backgroundColor: '#3B82F6', // blue button
+    padding: 16,
+    borderRadius: 8,
+    alignItems: 'center',
     marginBottom: 10,
-    lineHeight: 22,
-  }
-  
+  },
+  secondaryButton: {
+    backgroundColor: '#6B7280', // gray button
+    padding: 16,
+    borderRadius: 8,
+    alignItems: 'center',
+    marginBottom: 10,
+  },
+  buttonText: {
+    color: '#fff',  // white text on buttons
+    fontSize: 18,
+    fontWeight: '600',
+  },
+  stretchBox: {
+    backgroundColor: '#1E1E1E', // dark gray for stretch box
+    padding: 16,
+    borderRadius: 8,
+    marginBottom: 10,
+  },
+  resultCard: {
+    backgroundColor: '#2a2a2a',
+    padding: 14,
+    borderRadius: 10,
+    marginBottom: 12,
+    borderLeftWidth: 4,
+    borderLeftColor: '#3B82F6',
+  },
 });

@@ -48,3 +48,18 @@ Join our community of developers creating universal apps.
 
 - [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
 - [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+
+
+
+router.patch('/email/:email/planner/:id')
+
+button to mark completed
+
+create another endpoint to mark complete or done (button )
+that call and endpoint in index to call the planner to mark which are done
+
+-do profile: 
+- name
+- picture get pciture from phone
+- fetch
+
