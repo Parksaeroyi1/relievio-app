@@ -1,65 +1,55 @@
-# Welcome to your Expo app 👋
+📱 Frontend – Relievio App
+This is the mobile frontend of the Relievio app, built with React Native Expo and connected to a MongoDB backend via fetch() requests.
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+🏗️ Structure
+index.tsx – Main entry and home screen.
 
-## Get started
+Screens are organized by features (Planner, Tracker, Profile, etc.).
 
-1. Install dependencies
+🚀 Getting Started
+Start the app:
 
-   ```bash
-   npm install
-   ```
+bash
+Copy
+Edit
+npx expo start
+A QR code will appear in the terminal or Expo Dev Tools.
 
-2. Start the app
+Below the QR code, copy the IP address (e.g. 192.168.1.25) and:
 
-   ```bash
-   npx expo start
-   ```
+Replace only the IP address in all fetch('http://<ip>:8000/...) calls across the project.
+It is run locally.
 
-In the output, you'll find options to open the app in a
+Scan the QR with your phone using the Expo Go app.
 
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
+On first load, the screen may seem unresponsive.
+👉 Tap with three fingers on the screen to activate the interface.
 
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
+👤 How to Use
+Sign Up:
+Create your account on the sign-up screen.
 
-## Get a fresh project
+Log In:
+Enter your credentials to access the home screen.
 
-When you're ready, run:
+Home Screen Options:
 
-```bash
-npm run reset-project
-```
+Recommended Stretch – Shows a recommended daily stretch.
 
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
+Assessment – Brings you to the Planner to select a symptom/body part pair.
 
-## Learn more
+Reminder Setup – Schedule custom reminders.
 
-To learn more about developing your project with Expo, look at the following resources:
+Planner Screen:
 
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
+Select one symptom + one body part, scroll to view results.
 
-## Join the community
+You can add results to your Tracker or try a new selection.
 
-Join our community of developers creating universal apps.
+Tracker Screen:
 
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+View and manage all saved results from assessments.
 
+Profile Screen:
 
-
-router.patch('/email/:email/planner/:id')
-
-button to mark completed
-
-create another endpoint to mark complete or done (button )
-that call and endpoint in index to call the planner to mark which are done
-
--do profile: 
-- name
-- picture get pciture from phone
-- fetch
-
+Update your name, email, or password anytime.
