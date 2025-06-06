@@ -21,7 +21,7 @@ export default function TrackerScreen() {
     }
   
     try {
-      const response = await fetch(`http://192.168.2.46:8000/api/user/email/${email}/planner`);
+      const response = await fetch(`http://10.0.0.173:8000/api/user/email/${email}/planner`);
       const data = await response.json();
   
       if (response.ok || response.status === 200) {
@@ -50,7 +50,7 @@ export default function TrackerScreen() {
     }
 
     try {
-      const response = await fetch(`http://192.168.2.46:8000/api/user/email/${email}/planner/${itemId}`, {
+      const response = await fetch(`http://10.0.0.173:8000/api/user/email/${email}/planner/${itemId}`, {
         method: 'PATCH',
         headers: {
           'Content-Type': 'application/json',

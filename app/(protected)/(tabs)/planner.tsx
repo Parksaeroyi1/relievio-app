@@ -48,7 +48,7 @@ export default function PlannerScreen() {
 
 
     try {
-      const response = await fetch(`http://192.168.2.46:8000/api/user/email/${email}/planner`, {
+      const response = await fetch(`http://10.0.0.173:8000/api/user/email/${email}/planner`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -67,7 +67,7 @@ export default function PlannerScreen() {
 
   const fetchResults = async () => {
     try {
-      const response = await fetch('http://192.168.2.46:8000/api/results');
+      const response = await fetch('http://10.0.0.173:8000/api/results');
       const data = await response.json();
       setResults(data);
     } catch (error) {

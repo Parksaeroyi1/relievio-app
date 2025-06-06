@@ -39,7 +39,7 @@ export default function ProfileScreen() {
 
     try {
       const token = await AsyncStorage.getItem('token');
-      const response = await fetch(`http://192.168.2.46:8000/api/user/id/${userId}`, {
+      const response = await fetch(`http://10.0.0.173:8000/api/user/id/${userId}`, {
         method: 'PATCH',
         headers: {
           'Content-Type': 'application/json',
@@ -77,7 +77,7 @@ export default function ProfileScreen() {
 
     try {
       const token = await AsyncStorage.getItem('token');
-      const response = await fetch(`http://192.168.2.46:8000/api/user/id/${userId}`, {
+      const response = await fetch(`http://10.0.0.173:8000/api/user/id/${userId}`, {
         method: 'PATCH',
         headers: {
           'Content-Type': 'application/json',
@@ -116,7 +116,7 @@ export default function ProfileScreen() {
 
     try {
       const token = await AsyncStorage.getItem('token');
-      const response = await fetch(`http://192.168.2.46:8000/api/user/id/${userId}`, {
+      const response = await fetch(`http://10.0.0.173:8000/api/user/id/${userId}`, {
         method: 'PATCH',
         headers: {
           'Content-Type': 'application/json',

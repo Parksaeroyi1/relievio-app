@@ -24,7 +24,7 @@ export default function HomeScreen() {
   const scrollViewRef = useRef(null);
 
   const fetchRecommendedStretches = async () => {
-    const response = await fetch('http://192.168.2.46:8000/api/recommendations');
+    const response = await fetch('http://10.0.0.173:8000/api/recommendations');
     const data = await response.json();
     const randomIndex = Math.floor(Math.random() * data.length);
     setStretch(data[randomIndex]);

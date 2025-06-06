@@ -24,7 +24,7 @@ export default function SignupScreen() {
 
   const handleSignup = async () => {
     try {
-      const response = await fetch('http://192.168.2.46:8000/api/auth', {
+      const response = await fetch('http://10.0.0.173:8000/api/auth', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email, name, password }),
