@@ -9,6 +9,11 @@ import {
   Alert,
   TouchableOpacity,
   StyleSheet,
+  KeyboardAvoidingView, 
+  Platform, 
+  Keyboard, 
+  TouchableWithoutFeedback,
+  ScrollView
 } from 'react-native';
 import { saveUserEmail } from '../../util/auth'; // Adjust the import path as needed
 
@@ -52,6 +57,11 @@ export default function LoginScreen() {
   
 
   return (
+    <KeyboardAvoidingView
+  behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+  style={{ flex: 1 }}> 
+  <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+    <ScrollView contentContainerStyle={{ flexGrow: 1 }} keyboardShouldPersistTaps="handled">
     <SafeAreaView style={styles.container}>
       <Text style={styles.appName}>Relievio</Text>
       <Text style={styles.title}>Login</Text>
@@ -85,6 +95,9 @@ export default function LoginScreen() {
         </TouchableOpacity>
       </View>
     </SafeAreaView>
+    </ScrollView>
+    </TouchableWithoutFeedback>
+    </KeyboardAvoidingView>
   );
 }
 

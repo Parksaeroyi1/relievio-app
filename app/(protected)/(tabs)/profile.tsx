@@ -4,7 +4,6 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useNavigation } from '@react-navigation/native';
 import { saveUserEmail } from '../../../util/auth'; // Adjust the import path as needed
-import { MaterialIcons, Entypo } from '@expo/vector-icons'; // Add these icon imports at the top
 
 
 export default function ProfileScreen() {
@@ -52,6 +51,7 @@ export default function ProfileScreen() {
       const data = await response.json();
 
       if (response.ok) {
+        console.log(`✅ Name updated to: ${newName}`);
         Alert.alert('Success', 'Name updated successfully');
         setNewName('');
         if (data.user) {
@@ -89,6 +89,7 @@ export default function ProfileScreen() {
       const data = await response.json();
 
       if (response.ok) {
+        console.log(`✅ Email updated to: ${newEmail}`);
         Alert.alert('Success', 'Email updated successfully');
         setNewEmail('');
         await saveUserEmail(newEmail); // Save new email locally
@@ -129,6 +130,7 @@ export default function ProfileScreen() {
 
       const data = await response.json();
       if (response.ok) {
+        console.log(`✅ Password updated successfully`);
         Alert.alert('Success', 'Password updated successfully');
         setCurrentPassword('');
         setNewPassword('');
@@ -147,10 +149,12 @@ export default function ProfileScreen() {
       await AsyncStorage.removeItem('user');
       Alert.alert('Logged out', 'You have been successfully logged out.');
       navigation.replace('(auth)/login');
+      console.log('✅ User logged out successfully');
     } catch (error) {
       Alert.alert('Logout Failed', 'Something went wrong while logging out.');
     }
   };
+  
 
   return (
     <ScrollView style={styles.container}>
@@ -243,29 +247,27 @@ export default function ProfileScreen() {
         )}
       </View>
 
-      {/* About Us */}
-<View style={styles.infoCard}>
-  <Text style={styles.infoTitle}>About Us</Text>
-  <Text style={styles.infoBody}>
-    Relievio is a wellness platform designed to track symptoms and improve your well-being. 
-    Our mission is to empower you with personalized health insights and daily care routines.
-  </Text>
-</View>
+      {/* Clean About Us */}
+      <View style={styles.infoSection}>
+        <Text style={styles.subTitle}>About Us</Text>
+        <Text style={styles.infoText}>
+          Relievio is a wellness platform designed to track symptoms and improve your well-being.
+        </Text>
+      </View>
 
-{/* Contact Us */}
-<View style={styles.infoCard}>
-  <Text style={styles.infoTitle}>Contact Us</Text>
+      {/* Clean Contact Us */}
+      <View style={styles.infoSection}>
+        <Text style={styles.subTitle}>Contact Us</Text>
+        <Text style={styles.infoText}>Email: support@relievio.app</Text>
+        <Text style={styles.infoText}>Phone: +1 234-567-8910</Text>
+      </View>
 
-  <View style={styles.contactRow}>
-    <MaterialIcons name="email" size={22} color="#4ade80" style={styles.icon} />
-    <Text style={styles.contactText}>support@relievio.app</Text>
-  </View>
-
-  <View style={styles.contactRow}>
-    <Entypo name="phone" size={22} color="#4ade80" style={styles.icon} />
-    <Text style={styles.contactText}>+1 234-567-8910</Text>
-  </View>
-</View>
+      {/* Logout */}
+      <View style={{ marginTop: 30 }}>
+        <TouchableOpacity style={styles.logoutButton} onPress={handleLogout}>
+          <Text style={styles.logoutText}>Log Out</Text>
+        </TouchableOpacity>
+      </View>
     </ScrollView>
   );
 }
@@ -349,41 +351,4 @@ const styles = StyleSheet.create({
     lineHeight: 22,
     marginTop: 5,
   },
-
-  infoCard: {
-    backgroundColor: '#272727',
-    padding: 20,
-    borderRadius: 12,
-    marginBottom: 20,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 3 },
-    shadowOpacity: 0.3,
-    shadowRadius: 5,
-    elevation: 5,
-  },
-  infoTitle: {
-    fontSize: 22,
-    fontWeight: '700',
-    color: 'white',
-    marginBottom: 12,
-  },
-  infoBody: {
-    color: '#ddd',
-    fontSize: 16,
-    lineHeight: 24,
-  },
-  contactRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: 12,
-  },
-  icon: {
-    marginRight: 12,
-    color: 'white', // light green color for icons
-  },
-  contactText: {
-    color: '#eee',
-    fontSize: 16,
-  },
-  
 });

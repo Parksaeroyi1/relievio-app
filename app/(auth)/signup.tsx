@@ -9,6 +9,11 @@ import {
   Alert,
   TouchableOpacity,
   StyleSheet,
+  KeyboardAvoidingView, 
+  Platform, 
+  Keyboard, 
+  TouchableWithoutFeedback,
+  ScrollView
 } from 'react-native';
 
 export default function SignupScreen() {
@@ -41,6 +46,11 @@ export default function SignupScreen() {
   };
 
   return (
+    <KeyboardAvoidingView
+  behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+  style={{ flex: 1 }}> 
+  <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+    <ScrollView contentContainerStyle={{ flexGrow: 1 }} keyboardShouldPersistTaps="handled">
     <SafeAreaView style={styles.container}>
       <Text style={styles.appName}>Relievio</Text>
       <Text style={styles.title}>Sign Up</Text>
@@ -78,7 +88,10 @@ export default function SignupScreen() {
           <Text style={styles.link}>Already have an account? Log in</Text>
         </TouchableOpacity>
       </View>
-    </SafeAreaView>
+      </SafeAreaView>
+    </ScrollView>
+    </TouchableWithoutFeedback>
+    </KeyboardAvoidingView>
   );
 }
 

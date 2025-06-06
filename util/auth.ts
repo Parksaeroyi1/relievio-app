@@ -1,4 +1,4 @@
-// utils/auth.ts
+
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export const getCurrentUserEmail = async (): Promise<string | null> => {

@@ -19,7 +19,8 @@
             }
           }
         }
-      }
+      },
+      "bundleIdentifier": "com.anonymous.relievio-app"
     },
     "android": {
       "adaptiveIcon": {
