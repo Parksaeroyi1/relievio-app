@@ -39,6 +39,7 @@ Recommended Stretch – Shows a recommended daily stretch.
 Assessment – Brings you to the Planner to select a symptom/body part pair.
 
 Reminder Setup – Schedule custom reminders.
+Once you pick a date and time you will get a notfication/reminder to do relieve yourself!
 
 Planner Screen:
 
