@@ -2,7 +2,7 @@ import { StyleSheet, Text, View, ScrollView, TouchableOpacity, Alert } from 'rea
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useFocusEffect, useNavigation } from '@react-navigation/native';
-import { getCurrentUserEmail } from '../../../util/auth';
+import { getCurrentUserEmail, saveUserEmail } from '../../../util/auth';
 
 export default function PlannerScreen() {
   const [tags, setTags] = useState<string[]>([]);
@@ -23,12 +23,20 @@ export default function PlannerScreen() {
   );
 
   useEffect(() => {
-    (async () => {
-      const userEmail = await getCurrentUserEmail();
-      setEmail(userEmail);
-    })();
+    const fetchEmail = async () => {
+      const email = await getCurrentUserEmail(); // ✅ No more hardcoding
+      setEmail(email);
+      console.log('✅ Stored email:', email);
+    };
+  
+    fetchEmail();
+  }, []);
+
+  useEffect(() => {
     fetchResults();
   }, []);
+  
+  
 
   const createPlanner = async () => {
     if (!email) {
@@ -36,8 +44,11 @@ export default function PlannerScreen() {
       return;
     }
 
+    console.log('📬 Sending to planner for email:', email);
+
+
     try {
-      const response = await fetch(`http://localhost:8000/api/user/email/${email}/planner`, {
+      const response = await fetch(`http://192.168.2.46:8000/api/user/email/${email}/planner`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -56,7 +67,7 @@ export default function PlannerScreen() {
 
   const fetchResults = async () => {
     try {
-      const response = await fetch('http://localhost:8000/api/results');
+      const response = await fetch('http://192.168.2.46:8000/api/results');
       const data = await response.json();
       setResults(data);
     } catch (error) {

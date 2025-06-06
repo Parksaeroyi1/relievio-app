@@ -10,7 +10,7 @@ export default function HomeScreen() {
   const scrollViewRef = useRef(null);
 
   const fetchRecommendedStretches = async () => {
-    const response = await fetch('http://localhost:8000/api/recommendations');
+    const response = await fetch('http://192.168.2.46:8000/api/recommendations');
     const data = await response.json();
     const randomIndex = Math.floor(Math.random() * data.length);
     setStretch(data[randomIndex]);
@@ -51,22 +51,6 @@ export default function HomeScreen() {
           <Text style={styles.watchVideo}>▶️ Watch Video</Text>
         </TouchableOpacity>
       </View>
-
-      {/* Your Stats */}
-      <View style={[styles.card, styles.nearBlackBackground]}>
-        <Text style={styles.cardTitle}>Your Stats</Text>
-        <View style={styles.statsRow}>
-          <View style={styles.statBox}>
-            <Text style={styles.statNumber}>8</Text>
-            <Text style={styles.statLabel}>Stretches Done This Week</Text>
-          </View>
-          <View style={styles.statBox}>
-            <Text style={styles.statNumber}>5</Text>
-            <Text style={styles.statLabel}>Streak (Days)</Text>
-          </View>
-        </View>
-      </View>
-
      
       {/* Assessment Call to Action */}
       <View style={[styles.card, styles.darkBlueBackground]}>

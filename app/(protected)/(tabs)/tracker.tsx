@@ -14,18 +14,24 @@ export default function TrackerScreen() {
 
   const fetchResults = async () => {
     const email = await getCurrentUserEmail();
-
+  
     if (!email) {
       Alert.alert('User not logged in');
       return;
     }
-
+  
     try {
-      const response = await fetch(`http://localhost:8000/api/user/email/${email}/planner`);
+      const response = await fetch(`http://192.168.2.46:8000/api/user/email/${email}/planner`);
       const data = await response.json();
-
+  
       if (response.ok || response.status === 200) {
-        setPlanner(data.planner || []);
+        // Sort planner items: undone first, done last
+        const sortedPlanner = (data.planner || []).sort((a, b) => {
+          if (a.done === b.done) return 0;
+          return a.done ? 1 : -1; // done true => 1 (push down), false => -1 (stay on top)
+        });
+  
+        setPlanner(sortedPlanner);
       } else {
         Alert.alert('Failed to load planner', data.message);
       }
@@ -34,6 +40,7 @@ export default function TrackerScreen() {
       Alert.alert('Server error', 'Could not load planner data');
     }
   };
+  
 
   const markPlannerItemDone = async (itemId?: string) => {
     const email = await getCurrentUserEmail();
@@ -43,7 +50,7 @@ export default function TrackerScreen() {
     }
 
     try {
-      const response = await fetch(`http://localhost:8000/api/user/email/${email}/planner/${itemId}`, {
+      const response = await fetch(`http://192.168.2.46:8000/api/user/email/${email}/planner/${itemId}`, {
         method: 'PATCH',
         headers: {
           'Content-Type': 'application/json',
@@ -63,17 +70,13 @@ export default function TrackerScreen() {
     }
   };
 
+  
+
   useFocusEffect(
     useCallback(() => {
       fetchResults();
     }, [])
   );
-  
- /* useEffect(() => {
-    console.log('or');
-    fetchResults();
-
-  }, []); */
 
 
   return (
@@ -87,20 +90,12 @@ export default function TrackerScreen() {
         </View>
       </SafeAreaView>
 
-      {/* Calendar View */}
-      <View style={styles.section}>
-        <Text style={styles.subTitle}>Calendar</Text>
-      </View>
-
       {/* Sessions for Selected Date */}
       <View style={styles.section}>
         <Text style={styles.subTitle}>
+          Do stretches/massages to relieve your pain EVERYDAY
         </Text>
 
-        
-          <Text style={{ color: 'white', fontStyle: 'italic' }}>
-            No sessions logged on this date.
-          </Text>
 
         {planner && planner.map((item, index) => (
           <View key={index} style={styles.sessionCard}>
@@ -149,7 +144,7 @@ const styles = StyleSheet.create({
   subTitle: {
     fontSize: 20,
     fontWeight: '600',
-    marginBottom: 10,
+    marginBottom: 20,
     color: 'white',
   },
   section: {
