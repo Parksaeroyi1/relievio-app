@@ -3,7 +3,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export const getCurrentUserEmail = async (): Promise<string | null> => {
   try {
-    const email = await AsyncStorage.getItem('email'); // ✅ SAME KEY
+    const email = await AsyncStorage.getItem('email'); 
     return email;
   } catch (error) {
     console.error('Error retrieving user email:', error);
