@@ -24,7 +24,7 @@ export default function PlannerScreen() {
 
   useEffect(() => {
     const fetchEmail = async () => {
-      const email = await getCurrentUserEmail(); // ✅ No more hardcoding
+      const email = await getCurrentUserEmail(); 
       setEmail(email);
       console.log('✅ Stored email:', email);
     };
@@ -92,7 +92,7 @@ export default function PlannerScreen() {
       Alert.alert("No Match", "No results found for this combination.");
     }
 
-    setTags([]); // Optional: can be removed if unused
+    setTags([]); 
   };
 
   const handleReset = () => {
