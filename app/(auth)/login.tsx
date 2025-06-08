@@ -15,7 +15,7 @@ import {
   TouchableWithoutFeedback,
   ScrollView
 } from 'react-native';
-import { saveUserEmail } from '../../util/auth'; // Adjust the import path as needed
+import { saveUserEmail } from '../../util/auth'; 
 
 
 export default function LoginScreen() {
@@ -33,18 +33,18 @@ export default function LoginScreen() {
   
       const data = await response.json();
   
-      console.log('Login Response:', data); // ✅ Keep this for debugging
+      console.log('Login Response:', data); 
   
       if (response.ok) {
         const { token, userId } = data;
   
         await AsyncStorage.setItem('token', token);
         await AsyncStorage.setItem('userId', userId);
-        await saveUserEmail(email); // ✅ Store email
+        await saveUserEmail(email); 
   
         console.log('Saved token, userId, and email');
   
-        router.replace('/(protected)'); // ✅ Move this INSIDE the `if`
+        router.replace('/(protected)'); 
       } else {
         Alert.alert('Login failed', data.message || 'Please check your credentials');
       }
