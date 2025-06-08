@@ -44,7 +44,7 @@ export default function HomeScreen() {
         },
         trigger: {
           type: 'date',
-          date: datetime, // ✅ fixed: structured trigger format
+          date: datetime, 
         },
       });
   
