@@ -3,7 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useNavigation } from '@react-navigation/native';
-import { saveUserEmail } from '../../../util/auth'; // Adjust the import path as needed
+import { saveUserEmail } from '../../../util/auth'; 
 
 
 export default function ProfileScreen() {
@@ -28,7 +28,7 @@ export default function ProfileScreen() {
     loadUserId();
   }, []);
 
-  // Separate update for name
+ 
   const updateName = async () => {
     if (!userId) {
       return Alert.alert('Error', 'User ID not found. Please log in again.');
@@ -66,7 +66,7 @@ export default function ProfileScreen() {
     }
   };
 
-  // Separate update for email
+  
   const updateEmail = async () => {
     if (!userId) {
       return Alert.alert('Error', 'User ID not found. Please log in again.');
@@ -92,7 +92,7 @@ export default function ProfileScreen() {
         console.log(`✅ Email updated to: ${newEmail}`);
         Alert.alert('Success', 'Email updated successfully');
         setNewEmail('');
-        await saveUserEmail(newEmail); // Save new email locally
+        await saveUserEmail(newEmail); 
         if (data.user) {
           await AsyncStorage.setItem('user', JSON.stringify(data.user));
         }
@@ -247,7 +247,7 @@ export default function ProfileScreen() {
         )}
       </View>
 
-      {/* Clean About Us */}
+      {/* About Us */}
       <View style={styles.infoSection}>
         <Text style={styles.subTitle}>About Us</Text>
         <Text style={styles.infoText}>
@@ -255,7 +255,7 @@ export default function ProfileScreen() {
         </Text>
       </View>
 
-      {/* Clean Contact Us */}
+      {/* Contact Us */}
       <View style={styles.infoSection}>
         <Text style={styles.subTitle}>Contact Us</Text>
         <Text style={styles.infoText}>Email: support@relievio.app</Text>
