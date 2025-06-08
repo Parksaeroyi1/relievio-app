@@ -5,7 +5,7 @@ import {
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import { useFocusEffect } from 'expo-router';
-import { getCurrentUserEmail } from '../../../util/auth'; // Adjust the import path as needed
+import { getCurrentUserEmail } from '../../../util/auth'; 
 
 
 
@@ -25,10 +25,10 @@ export default function TrackerScreen() {
       const data = await response.json();
   
       if (response.ok || response.status === 200) {
-        // Sort planner items: undone first, done last
+    
         const sortedPlanner = (data.planner || []).sort((a, b) => {
           if (a.done === b.done) return 0;
-          return a.done ? 1 : -1; // done true => 1 (push down), false => -1 (stay on top)
+          return a.done ? 1 : -1; 
         });
   
         setPlanner(sortedPlanner);
@@ -60,7 +60,7 @@ export default function TrackerScreen() {
       const data = await response.json();
 
       if (response.ok) {
-        fetchResults(); // Refresh the planner list after marking done
+        fetchResults(); 
       } else {
         Alert.alert('Failed to update item', data.message);
       }
@@ -162,7 +162,7 @@ const styles = StyleSheet.create({
   sessionText: {
     color: 'white',
     fontSize: 16,
-    flexShrink: 1,  // in case text is too long
+    flexShrink: 1,  
   },
   statsRow: {
     flexDirection: 'row',
